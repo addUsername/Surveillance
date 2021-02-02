@@ -21,7 +21,7 @@ send data as binary aka no sT(ext)omp/websockets and try with normal sockets or 
 '''
 class MyOutput:
     
-    host = "192.168.1.51:8080"
+    host = ""
     
     def __init__(self):
         self.output_file = io.open("video.mjpg","wb")
@@ -64,7 +64,7 @@ class MyOutput:
         self.ws.close()
         print("close")
         
-x = requests.get("http://192.168.1.51:8080/ini/1");
+x = requests.get("/ini/1");
 camera = PiCamera()
 camera.resolution = (640,360)
 camera.framerate = 30
@@ -79,5 +79,5 @@ camera.wait_recording(10)
 camera.stop_recording()
 output.close()
 time.sleep(3)
-x = requests.get("http://192.168.1.51:8080/save");
+x = requests.get("/save");
 print(x)
