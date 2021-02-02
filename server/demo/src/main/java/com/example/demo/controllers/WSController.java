@@ -30,6 +30,5 @@ public class WSController {
 		byte[] decoded = Base64Utils.decodeFromString(string.getPayload());
 		fp.add(decoded);
 		smt.convertAndSend("/topic/info", "200");
-	}
-	
+	}	
 }

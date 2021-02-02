@@ -1,8 +1,14 @@
 package com.example.demo.controllers;
 
+import java.io.IOException;
+import java.io.OutputStream;
+
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,5 +38,16 @@ public class RESTController {
 		
 		System.out.println("SAAAAAVE");
 		return new ResponseEntity( (fp.save())? HttpStatus.ACCEPTED : HttpStatus.INTERNAL_SERVER_ERROR);
-	}
+	}	
+	@CrossOrigin
+	@GetMapping( value = "/stream/{id}")
+    public void stream(@PathVariable(value = "id") int id,
+    		HttpServletResponse response) throws IOException {
+		
+	   response.setStatus(HttpStatus.ACCEPTED.value());
+	   //response.setContentType("multipart/x-mixed-replace; boundary=--BoundaryString");
+	   fp.writeStream(response.getOutputStream(), id, ".h264");
+	   
+	   return;
+    }
 }
