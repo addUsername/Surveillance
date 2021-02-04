@@ -25,6 +25,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 	
 	@Override
 	public void registerStompEndpoints(StompEndpointRegistry registry) {		
-		registry.addEndpoint("/mjpeg").setAllowedOrigins("*");
+		registry.addEndpoint("/mjpeg/{id}").setAllowedOrigins("*");
 	}
 }

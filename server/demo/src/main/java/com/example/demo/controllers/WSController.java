@@ -3,6 +3,7 @@ package com.example.demo.controllers;
 import java.io.UnsupportedEncodingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.Message;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
@@ -24,11 +25,13 @@ public class WSController {
 	@Autowired
 	private FileParser fp;
 	
-	@MessageMapping("/mjpeg")
-	public void getFrames(Message<String> string) throws UnsupportedEncodingException {
+	@MessageMapping("/mjpeg/{id}")
+	public void getFrames(@DestinationVariable String id, Message<String> string) throws UnsupportedEncodingException {
+		
+		System.out.println(id);
 		
 		byte[] decoded = Base64Utils.decodeFromString(string.getPayload());
-		fp.add(decoded);
+		fp.add(decoded, Integer.parseInt(id));
 		smt.convertAndSend("/topic/info", "200");
-	}	
+	}
 }

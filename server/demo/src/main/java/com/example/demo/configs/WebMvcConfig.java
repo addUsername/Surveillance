@@ -12,8 +12,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
 	  @Bean
 	  public ThreadPoolTaskExecutor mvcTaskExecutor() {
 	    ThreadPoolTaskExecutor taskExecutor = new ThreadPoolTaskExecutor();
-	    taskExecutor.setCorePoolSize(10);
-	    taskExecutor.setMaxPoolSize(10); 
+	    taskExecutor.setCorePoolSize(1000000);
+	    taskExecutor.setMaxPoolSize(1000000); 
 	    return taskExecutor;
 	  }
 

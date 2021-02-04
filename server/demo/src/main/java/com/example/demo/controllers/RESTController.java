@@ -2,6 +2,7 @@ package com.example.demo.controllers;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Base64;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -33,18 +34,17 @@ public class RESTController {
 		fp.iniUpload(id);
 		return new ResponseEntity( HttpStatus.ACCEPTED);
 	}
+	/*
 	@GetMapping("save")
 	public ResponseEntity<String> save(){
-		
 		System.out.println("SAAAAAVE");
 		return new ResponseEntity( (fp.save())? HttpStatus.ACCEPTED : HttpStatus.INTERNAL_SERVER_ERROR);
-	}	
+	}*/
 	@CrossOrigin
 	@GetMapping( value = "/stream/{id}")
     public void stream(@PathVariable(value = "id") int id,
     		HttpServletResponse response) throws IOException {
-		
-	   response.setStatus(HttpStatus.ACCEPTED.value());
+		System.out.println("HOLAAAA?????");
 	   //response.setContentType("multipart/x-mixed-replace; boundary=--BoundaryString");
 	   fp.writeStream(response.getOutputStream(), id, ".h264");
 	   
