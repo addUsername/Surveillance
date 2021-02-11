@@ -29,7 +29,7 @@ public class RESTController {
 	
 	@GetMapping("ini/{id}")
 	public ResponseEntity<String> hi(@PathVariable(value = "id") int id){
-		
+		//id
 		System.out.println("ini");
 		fp.iniUpload(id);
 		return new ResponseEntity( HttpStatus.ACCEPTED);
@@ -44,7 +44,11 @@ public class RESTController {
 	@GetMapping( value = "/stream/{id}")
     public void stream(@PathVariable(value = "id") int id,
     		HttpServletResponse response) throws IOException {
-		System.out.println("HOLAAAA?????");
+		/*
+		 * procesar token usuario (android/web)
+		 * 
+		 * 
+		 * */
 	   //response.setContentType("multipart/x-mixed-replace; boundary=--BoundaryString");
 	   fp.writeStream(response.getOutputStream(), id, ".h264");
 	   
