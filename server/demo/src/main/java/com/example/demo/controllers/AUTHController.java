@@ -1,9 +1,14 @@
 package com.example.demo.controllers;
 
+import java.io.File;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,9 +48,18 @@ public class AUTHController {
 	public ResponseEntity<?> register (@Valid @RequestBody RegisterDTO newUser){
 		
 		if(auth.registerUser(newUser)) {
-			return new ResponseEntity(new String("user already exist"), HttpStatus.BAD_REQUEST);
+			File dumpDb = auth.getDump();
+			
+			HttpHeaders respHeaders = new HttpHeaders();
+				respHeaders.setContentType(new MediaType("application","octet-stream"));
+			    respHeaders.setContentLength(dumpDb.length());
+			    
+			return new ResponseEntity<FileSystemResource>(
+			new FileSystemResource( dumpDb), respHeaders, HttpStatus.OK
+			);
 		}
-		return new ResponseEntity(new String("ok"), HttpStatus.OK); // redirect login
+		
+		return new ResponseEntity("user already exist", HttpStatus.BAD_REQUEST); // redirect login
 	}
 	
 

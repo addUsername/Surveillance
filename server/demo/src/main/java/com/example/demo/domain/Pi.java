@@ -38,8 +38,5 @@ public class Pi {
 		this.alias = alias;
 		this.location = location;
 		this.piSettings = piSettings;
-	}
-	
-	
-	
+	}	
 }
