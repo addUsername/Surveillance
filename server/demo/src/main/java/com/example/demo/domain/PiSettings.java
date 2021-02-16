@@ -1,24 +1,42 @@
 package com.example.demo.domain;
 
-public class PiSettings {
+import java.util.List;
 
-	// http connection
-	private long id; //mac?
-	private String iniPath;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Entity
+@NoArgsConstructor @Getter @Setter
+public class PiSettings {
 	
-	// 
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private long id;
+	
+	@Column
+	private String iniPath;
 	private String conectPath;
 	private String sendPath;
 	private String subscribePath;
 
-	// video streaming
-	private EnumVideoExt videoExt;	
-	private int bitrate;
+	@Enumerated(EnumType.STRING)
+	private EnumVideoExt videoExt;
+	@Enumerated(EnumType.STRING)
 	private EnumVideoResolution videoRes;
+	private int bitrate;
 	
 	// detection
 	private String model;
-	private String config;
-	private String[] classes;
+	private String weights;
+	private List<String> classes;
 	private int threshoold;
 }
