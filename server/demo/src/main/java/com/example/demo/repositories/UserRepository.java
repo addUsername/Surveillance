@@ -17,4 +17,7 @@ public interface UserRepository extends JpaRepository<User,Long> {
 	@Query(value="SCRIPT TO ?1 ;", nativeQuery = true)
 	List<String> dumpDB(String path);
 	
+	@Query(value="RUNSCRIPT FROM ?1 ;", nativeQuery = true)
+	List<String> loadDB(String path);
+	
 }

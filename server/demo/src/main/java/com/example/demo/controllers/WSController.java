@@ -9,7 +9,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Base64Utils;
 
-import com.example.demo.model.FileParser;
+import com.example.demo.services.FileParser;
 
 /**
  * Pi code needs to implement recived but not requested commands (apply config, status, on/off..) this operations
