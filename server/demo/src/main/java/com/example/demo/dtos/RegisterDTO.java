@@ -1,5 +1,6 @@
 package com.example.demo.dtos;
 
+import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -28,5 +29,9 @@ public class RegisterDTO {
 	private Integer pin;
 	@NotNull
 	@Email
-	private String email;
+	private String email;	
+	@AssertTrue
+	public boolean isValid() {
+		return getPass().equals(getPass2());
+	}
 }
