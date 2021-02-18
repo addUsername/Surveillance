@@ -3,14 +3,19 @@ Server project, its principal mission is to proxy Pi(s) and Client projects. Eac
 ## Endpoints
 
 `/auth` : not jwt token needed
-- /register: Server has an in memory database, an encrypted dump.sql is generated and sended to user if succesfull sign in.
-- /login: Recives that dump.sql and a pin, do its own thing and a jwt token is returned.
+- **/register:** Server has an in memory database, an encrypted dump.sql is generated and sended to user if succesfull sign in.
+- **/login:** Receives that dump.sql and a pin, do its own thing and a jwt token is returned.
 
 `/media` : Auth header needed
-- /config/{idPiCamera}: RPi's settings, customize metadata, mode, quality, etc.. This rest endpoint sends via Websocket the settings.properties file generated to RPi
-- /stream/{idPiCamera}: streams as .mjpeg or .hs264, it could stream multiple RPis at once.. i hope.
-- /home:
-- /generalView: appends selected RPis streams to the same frame and generate a mjpeg stream.
+- **/config/{idPiCamera}:** RPi's settings, customize metadata, mode, quality, etc.. This rest endpoint sends via Websocket the settings.properties file generated to RPi or not, maybe just a rest endpoint with normal http request
+- **/stream/{idPiCamera}:** streams as .mjpeg or .hs264, it could stream multiple RPis at once.. i hope.
+- **/home:** ?? maybe should show a map with RPi's current status
+- **/generalView:** appends selected RPis streams to the same frame and generate a mjpeg stream.
+- **/ini/{idPiCamera}:** Pi visits this on startup, to get server status and settings.properties, for RPis the response code acts like a flag, tryig to connect till 200 ok are received
+
+`/websocket` : auth needed?
+-  **/stream/{idPiCamera}:** where RPi's websocket client connects and send video.
+-  **/topic/info:** where all RPis subscribe and listen mssg from server.
 
 ## Wishlist
 - Basic auth & security
