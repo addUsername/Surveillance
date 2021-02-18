@@ -15,7 +15,8 @@ Server project, its principal mission is to proxy Pi(s) and Client projects. Eac
 
 `/websocket` : auth needed?
 -  **/stream/{idPiCamera}:** where RPi's websocket client connects and send video.
--  **/topic/info:** where all RPis subscribe and listen mssg from server.
+-  **/topic/info:** where all RPis subscribe and listen mssg from server. ??Prob not needed
+- **{id}/queue/:** subscribe endpoint where send mssg to specifc RPi
 
 ## Wishlist
 - Basic auth & security
