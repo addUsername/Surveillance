@@ -29,7 +29,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
 	@Override
 	  public void configureMessageBroker(MessageBrokerRegistry config) {
-	    config.enableSimpleBroker("/topic");//("/topic" , "/queue");
+	    config.enableSimpleBroker("/topic", "/queue");//("/topic" , "/queue");
 
 		// on client side subscribe("/{id}/queue/reply").. 
 		// on controller simpMessagingTemplate.convertAndSendToUser(id_raspberry, "/queue/reply", message); // o el fichero settings.properties.. gut
