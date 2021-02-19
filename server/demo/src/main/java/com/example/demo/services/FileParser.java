@@ -1,19 +1,11 @@
 package com.example.demo.services;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Queue;
 import java.util.concurrent.SynchronousQueue;
 
 import org.springframework.stereotype.Component;
-import org.springframework.util.Base64Utils;
 /**
  * Model is gonna be a lot more complex:
  * - User.class
@@ -30,9 +22,6 @@ public class FileParser {
 
 	private HashMap<Integer,SynchronousQueue<byte[]>> videos;
 	
-	private BufferedOutputStream bos;
-	private String path = "video";
-	private final String MJPEG = ".mjpg";
 	private final String H264 = ".h264";
 	
 	public FileParser() {
@@ -90,7 +79,6 @@ public class FileParser {
 				responseOs.flush();
 				Thread.sleep(1000/20);
 			} catch (IOException | InterruptedException e) {
-				// TODO Auto-generated catch block
 				//e.printStackTrace();
 				System.out.println("interrupted");
 			}			
