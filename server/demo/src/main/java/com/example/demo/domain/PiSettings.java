@@ -13,10 +13,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 
-import org.springframework.beans.factory.annotation.Value;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
@@ -26,47 +24,36 @@ public class PiSettings {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
-	@Value("${pi.host}")
 	private String host;
-	@Value("${pi.iniPath}")
 	private String iniPath;
-	@Value("${pi.connectPath}")
 	private String connectPath;
-	@Value("${pi.sendPath}")
 	private String sendPath;
-	@Value("${pi.subscribePath}")
 	private String subscribePath;
 
 	@Enumerated(EnumType.STRING)
 	private EnumVideoExt videoExt = EnumVideoExt.H264;
 	@Enumerated(EnumType.STRING)
 	private EnumVideoResolution videoRes = EnumVideoResolution.MEDIUM;
-	@Value("${pi.bitrate}")
 	private int bitrate;
 	
 	// detection
-	@Value("${pi.model}")
 	private String model;
-	@Value("${pi.weights}")
 	private String weights;
 	@ElementCollection
-	private List<String> classes = new ArrayList<String>(); //LOOK thiss
-	@Value("${pi.threshold}")
-	private int threshoold;
-	@Transient
-	@Value("${pi.classes}")
-	private String defaultClasses;
+	private List<String> classes; //LOOK thiss
+	private String threshold;
+	@Enumerated(EnumType.STRING)
+	private EnumStatus status;
 	
-	public PiSettings() {
-		this.classes.add(defaultClasses);
+	public PiSettings() {		
 	}
 	/**
 	 * TODO
 	 * refection powah https://stackoverflow.com/a/14114122/13771772
 	 * @return
 	 */
-	public String toStringFile() {
-		String toReturn = "";
+	public String toStringFile(String id_RPi) {
+		String toReturn = "id="+id_RPi+"\n";
 		 Class<?> c = this.getClass();
 		 Field[] fields = c.getDeclaredFields();
 		 for( Field field : fields ){

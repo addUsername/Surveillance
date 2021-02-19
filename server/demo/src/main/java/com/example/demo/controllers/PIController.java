@@ -21,7 +21,7 @@ public class PIController {
 	PiService pis;
 	
 	@GetMapping("/ini/{id}")
-	public ResponseEntity<String> hi(@PathVariable(value = "id") int id){
+	public ResponseEntity<String> ini(@PathVariable(value = "id") int id){
 		
 		String file = pis.getSettingsFile(Long.valueOf(id));
 		

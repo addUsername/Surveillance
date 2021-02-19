@@ -28,8 +28,7 @@ import com.example.demo.services.AuthService;
 public class AUTHController {
 	
 	@Autowired
-	private AuthService auth;
-	
+	private AuthService auth;	
 	
 	@RequestMapping(value = "/login", method = RequestMethod.POST, consumes = {"multipart/form-data"})
 	public ResponseEntity<String> login(
@@ -41,11 +40,11 @@ public class AUTHController {
 			
 			if(auth.checkPin(pin.getPin())) {
 				String jwt = auth.generateToken(pin.getPin());
-				return new ResponseEntity(jwt, HttpStatus.OK);
+				return new ResponseEntity<String>(jwt, HttpStatus.OK);
 			}			
 		}
 		
-		return new ResponseEntity(new String("ooops"), HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<String>("ooops", HttpStatus.BAD_REQUEST);
 	}
 	
 	@RequestMapping(value = "/register", method = RequestMethod.POST)
@@ -62,7 +61,7 @@ public class AUTHController {
 					new FileSystemResource( dumpDb), respHeaders, HttpStatus.OK
 			); 
 		}		
-		return new ResponseEntity("user already exists", HttpStatus.BAD_REQUEST); 
+		return new ResponseEntity<String>("user already exists", HttpStatus.BAD_REQUEST); 
 	}
 	
 
