@@ -7,6 +7,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.domain.EnumStatus;
 import com.example.demo.domain.EnumVideoExt;
 import com.example.demo.domain.EnumVideoResolution;
 import com.example.demo.domain.Pi;
@@ -67,6 +68,20 @@ public class PiService {
 		pi.setPiSettings(piS);
 		repo.save(pi);		
 		return true;
+	}
+
+	public boolean changeStatusToUP(int id) {
+		Pi pi = repo.findById(Long.parseLong(""+id)).get();
+		if(pi == null) return false;
+		pi.setStatus(EnumStatus.UP);		
+		return true;
+	}
+
+	public String getVideoExt(int id) {
+		Pi pi = repo.findById(Long.parseLong(""+id)).get();
+		if(pi == null) return null;
+		return pi.getPiSettings().getVideoExt().toString();
+		
 	}
 
 }

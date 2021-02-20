@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.domain.EnumVideoExt;
 import com.example.demo.dtos.HomeDTO;
 import com.example.demo.dtos.PiDTO;
 import com.example.demo.dtos.PiSettingsDTO;
@@ -41,53 +42,59 @@ public class USERController {
 	
 	@Autowired
 	private FileParser fp;
-
 	@Autowired
 	private AuthService auth;
 	@Autowired
 	private UserService us;
 	@Autowired
-	private PiService pis;
-	
+	private PiService pis;	
 	@Autowired
 	private SimpMessagingTemplate messageSender;
 	
 
-	@GetMapping(value = "/sayHello")
+	@CrossOrigin
+	@GetMapping( value = "/stream/{id}") //update
+    public void stream(@PathVariable(value = "id") int id,
+    		HttpServletResponse response) throws IOException {
+		
+		String type = pis.getVideoExt(id);
+		
+		if(type.equals(EnumVideoExt.MJPEG.toString())) {
+			response.setContentType("multipart/x-mixed-replace; boundary=--BoundaryString");
+		}
+		
+	    fp.writeStream(response.getOutputStream(), id, type);	   
+	    return;
+    }
+	@GetMapping(value = "/sayHello") //TEST
 	public ResponseEntity<?> sayHello(){
 		messageSender.convertAndSendToUser("1", "/queue/reply", "hi bitchess, I'm from android this f shit works!! aa");
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
-	@GetMapping(value = "/home")
-	public ResponseEntity<?> home(){
-		HomeDTO home = us.getHome();
-		if(home == null) return new ResponseEntity<String>("nope", HttpStatus.OK);
-		return new ResponseEntity<HomeDTO>(home,HttpStatus.OK);
-	}
-	@PostMapping(value = "/setRpi")
-	public ResponseEntity<?> setRpi(@Valid @RequestBody PiDTO pi){
-		if(pis.addRPi(pi)) {
-			return new ResponseEntity<>("Rpi saved",HttpStatus.OK);
-		};
-		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-	}
-	@PostMapping(value = "/config/{id}")
+	
+	@PostMapping(value = "/config/{id}") //TEST
 	public ResponseEntity<?> config(@PathVariable(value = "id") int id, @Valid  @RequestBody PiSettingsDTO piSettings){
 		if(pis.updatePiSettings(piSettings)) {
 			return new ResponseEntity<String>("noice", HttpStatus.OK);
 		};
 		return new ResponseEntity<String>("bad :(", HttpStatus.BAD_REQUEST);		
+	}
+	
+	@GetMapping(value = "/home") //OK
+	public ResponseEntity<?> home(){
+		HomeDTO home = us.getHome();
+		if(home == null) return new ResponseEntity<String>("nope", HttpStatus.OK);
+		return new ResponseEntity<HomeDTO>(home,HttpStatus.OK);
+	}
+	@PostMapping(value = "/setRpi") //OK
+	public ResponseEntity<?> setRpi(@Valid @RequestBody PiDTO pi){
+		if(pis.addRPi(pi)) {
+			return new ResponseEntity<>("Rpi saved",HttpStatus.OK);
+		};
+		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 	}	
-	@CrossOrigin
-	@GetMapping( value = "/stream/{id}")
-    public void stream(@PathVariable(value = "id") int id,
-    		HttpServletResponse response) throws IOException {
-		
-	   //response.setContentType("multipart/x-mixed-replace; boundary=--BoundaryString");
-	   fp.writeStream(response.getOutputStream(), id, ".h264");	   
-	   return;
-    }
-	@RequestMapping(value = "/dump", method = RequestMethod.POST)
+
+	@RequestMapping(value = "/dump", method = RequestMethod.POST) //OK
 	public ResponseEntity<?> dump(HttpServletResponse response){
 		
 		File dumpDb = auth.getDump();

@@ -27,7 +27,11 @@ public class PIController {
 		
 		if(file == null) return new ResponseEntity<String>(HttpStatus.UNAUTHORIZED);
 		
-		fp.iniUpload(id);
-		return new ResponseEntity<String>(file,HttpStatus.ACCEPTED);
+		if(pis.changeStatusToUP(id)) {
+			fp.iniUpload(id);
+			return new ResponseEntity<String>(file,HttpStatus.ACCEPTED);
+		}
+		
+		return new ResponseEntity<String>(HttpStatus.UNAUTHORIZED);
 	}
 }

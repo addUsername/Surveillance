@@ -67,8 +67,6 @@ public class PiSettingsFactory {
 		classes.add(defaultClasses);
 		toReturn.setClasses(classes);
 		
-		toReturn.setStatus(EnumStatus.OFF);
-		
 		return toReturn;
 	}
 }

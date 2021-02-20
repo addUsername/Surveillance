@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import com.example.demo.domain.Pi;
 import com.example.demo.domain.User;
 import com.example.demo.dtos.HomeDTO;
+import com.example.demo.dtos.HomePiDTO;
+import com.example.demo.repositories.PiRepository;
 import com.example.demo.repositories.UserRepository;
 
 @Service
@@ -16,19 +18,18 @@ public class UserService {
 	
 	@Autowired
 	private UserRepository repo;
+	@Autowired
+	private PiRepository piRepo;
 
 	public HomeDTO getHome() {
 		
-		List<User> uList = repo.findAll();
-		if(uList.isEmpty()) return null;
+		List<HomePiDTO> list = new ArrayList<HomePiDTO>();		
 		
-		
-		List<Long> ids = new ArrayList<Long>();		
-		for(Pi pi: uList.get(0).getCameras()) {
-			ids.add(pi.getId());
+		for(String[] s: piRepo.findAllIds()) {
+			list.add(new HomePiDTO(Long.parseLong(s[0]),s[1]));
 		}
 		HomeDTO toReturn = new HomeDTO();
-		toReturn.setPi_ids(ids);
+		toReturn.setPi_ids(list);
 		return toReturn;
 	}
 

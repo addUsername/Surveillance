@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.concurrent.SynchronousQueue;
 
 import org.springframework.stereotype.Component;
+
+import com.example.demo.domain.EnumVideoExt;
 /**
  * Model is gonna be a lot more complex:
  * - User.class
@@ -22,7 +24,6 @@ public class FileParser {
 
 	private HashMap<Integer,SynchronousQueue<byte[]>> videos;
 	
-	private final String H264 = ".h264";
 	
 	public FileParser() {
 		System.err.println("file parse instance created");
@@ -33,7 +34,6 @@ public class FileParser {
 		try {
 			videos.get(videoId).put(fragment);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -58,7 +58,7 @@ public class FileParser {
 	
 	public void writeStream(OutputStream responseOs, int videoId, String type) {
 		
-		if(type.equals(H264)) {
+		if(type.equals(EnumVideoExt.H264.toString())) {
 			writeStreamH264(responseOs, videoId);
 			return;
 		}
@@ -95,9 +95,8 @@ public class FileParser {
 				if (bytes == null) return;
 				responseOs.write(bytes);
 				responseOs.flush();
-				Thread.sleep(1000/10);
+				Thread.sleep(1000/10); //TODO fps
 			} catch (IOException | InterruptedException e) {
-				// TODO Auto-generated catch block
 				//e.printStackTrace();
 				System.out.println("interrupted");
 			}			

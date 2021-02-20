@@ -3,6 +3,8 @@ package com.example.demo.domain;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -31,12 +33,7 @@ public class Pi {
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "user_id")
 	private User user;
+	@Enumerated(EnumType.STRING)
+	private EnumStatus status = EnumStatus.OFF;
 	
-	public Pi(Long id, String alias, String location, PiSettings piSettings) {
-		super();
-		this.id = id;
-		this.alias = alias;
-		this.location = location;
-		this.piSettings = piSettings;
-	}	
 }
