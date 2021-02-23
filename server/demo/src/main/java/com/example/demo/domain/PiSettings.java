@@ -10,6 +10,11 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+
+import com.example.demo.domain.enums.EnumBoolean;
+import com.example.demo.domain.enums.EnumVideoExt;
+import com.example.demo.domain.enums.EnumVideoResolution;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -26,15 +31,22 @@ public class PiSettings {
 	private String connectPath;
 	private String sendPath;
 	private String subscribePath;
-
+	
+	private String videosPath;
+	private String pushPath;
+	
+	@Enumerated(EnumType.STRING)
+	private EnumBoolean saveVideo = EnumBoolean.False;
 	// video
 	@Enumerated(EnumType.STRING)
 	private EnumVideoExt videoExt = EnumVideoExt.H264;
 	@Enumerated(EnumType.STRING)
 	private EnumVideoResolution videoRes = EnumVideoResolution.MEDIUM;
 	private int bitrate;
+	
 	private int framerate;
 	private int rotation;
+	private int timeRecording;
 	
 	// detection
 	private String model;

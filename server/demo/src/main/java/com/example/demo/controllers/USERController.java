@@ -20,9 +20,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
-import com.example.demo.domain.EnumVideoExt;
+import com.example.demo.domain.enums.EnumVideoExt;
 import com.example.demo.dtos.HomeDTO;
 import com.example.demo.dtos.PiDTO;
 import com.example.demo.dtos.PiSettingsDTO;
@@ -57,18 +60,31 @@ public class USERController {
     public void stream(@PathVariable(value = "id") int id,
     		HttpServletResponse response) throws IOException {
 		
+		System.out.println("STREAM CLIEENT??");
 		String type = pis.getVideoExt(id);
-		
-		if(type.equals(EnumVideoExt.MJPEG.toString())) {
+		System.out.println(type.toString());
+		if(type.equals(EnumVideoExt.MJPEG.toString())) {			
 			response.setContentType("multipart/x-mixed-replace; boundary=--BoundaryString");
 		}
-		
+		System.out.println("write stream");
 	    fp.writeStream(response.getOutputStream(), id, type);	   
 	    return;
     }
-	@GetMapping(value = "/sayHello") //TEST
-	public ResponseEntity<?> sayHello(){
-		messageSender.convertAndSendToUser("1", "/queue/reply", "hi bitchess, I'm from android this f shit works!! aa");
+	@GetMapping(value = "/sayHello/{id}") //TEST
+	public ResponseEntity<?> sayHello(@PathVariable(value = "id") int id){
+		System.out.println("aaaa");
+		//messageSender.convertAndSendToUser(""+id, "/queue/reply", "hi bitchess, I'm from android this f shit works!! aa");
+		messageSender.convertAndSend("/topic/info/","hi??");
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
+	@RequestMapping(value = "/push/{id}", method = RequestMethod.POST)//, consumes = {"image/jpeg"})
+	public ResponseEntity<?> push(@PathVariable(value = "id") int id, @RequestParam MultipartFile file ){
+		System.out.println("push to user");
+		System.out.println(file.getOriginalFilename());
+		System.out.println(file.getSize());
+		
+		pis.changeStatusToRUNNING(id);
+		messageSender.convertAndSend("/topic/info/","STREAM\n\nid="+id);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	

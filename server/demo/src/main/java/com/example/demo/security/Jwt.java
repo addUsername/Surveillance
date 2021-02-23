@@ -25,6 +25,7 @@ public class Jwt {
 	 * @param user
 	 * @return
 	 */
+									//GUARDAR SU USERNAME EN EL SUBJECT NO EL PIN!!
 	public static String generateToken(byte[] secret, String string) {
 		
 		return Jwts.builder().setSubject(string).setIssuedAt(new Date())
@@ -48,6 +49,7 @@ public class Jwt {
 	}
 
 	public static String getSubject(byte[] secret, String token) {
+		
 		return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().getSubject();
 	}
 }

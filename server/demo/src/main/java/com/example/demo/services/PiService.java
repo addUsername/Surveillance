@@ -7,13 +7,13 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.demo.domain.EnumStatus;
-import com.example.demo.domain.EnumVideoExt;
-import com.example.demo.domain.EnumVideoResolution;
 import com.example.demo.domain.Pi;
 import com.example.demo.domain.PiSettings;
 import com.example.demo.domain.User;
 import com.example.demo.domain.Factory.PiSettingsFactory;
+import com.example.demo.domain.enums.EnumStatus;
+import com.example.demo.domain.enums.EnumVideoExt;
+import com.example.demo.domain.enums.EnumVideoResolution;
 import com.example.demo.dtos.PiDTO;
 import com.example.demo.dtos.PiSettingsDTO;
 import com.example.demo.repositories.PiRepository;
@@ -73,8 +73,17 @@ public class PiService {
 	public boolean changeStatusToUP(int id) {
 		Pi pi = repo.findById(Long.parseLong(""+id)).get();
 		if(pi == null) return false;
-		pi.setStatus(EnumStatus.UP);		
+		pi.setStatus(EnumStatus.UP);
+		repo.save(pi);
 		return true;
+	}
+	
+	public boolean changeStatusToRUNNING(int id) {
+		Pi pi = repo.findById(Long.parseLong(""+id)).get();
+		if(pi == null) return false;
+		pi.setStatus(EnumStatus.RUNNING);
+		repo.save(pi);
+		return true;		
 	}
 
 	public String getVideoExt(int id) {

@@ -7,15 +7,8 @@ import java.util.concurrent.SynchronousQueue;
 
 import org.springframework.stereotype.Component;
 
-import com.example.demo.domain.EnumVideoExt;
+import com.example.demo.domain.enums.EnumVideoExt;
 /**
- * Model is gonna be a lot more complex:
- * - User.class
- * - Raspberry.class
- * - VideoFormat enum
- * - AUTH
- * - JPA
- * - ??
  * @author SERGI
  *
  */
