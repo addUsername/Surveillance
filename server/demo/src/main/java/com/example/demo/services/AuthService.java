@@ -37,12 +37,12 @@ public class AuthService {
 
 	@Autowired
 	private DataSource dataSource;
+	
+	@Autowired
+	private Jwt jwt;
 
 	@Value("${secret.magicKey}")
 	private String magicKey;
-	
-	@Value("${path.upload}")
-	private String jwtSecret;
 	
 	@Value("${path.dump}")
 	private String dumpPath;
@@ -115,9 +115,9 @@ public class AuthService {
 	}
 
 	public String generateToken(Integer pin) {
-		// TODO Auto-generated method stub
-		return Jwt.generateToken(jwtSecret.getBytes(),
-								repo.findByPin(pin).get().getUsername());
+		String username = repo.findByPin(pin).get().getUsername();
+		if(username == null) return null;
+		return jwt.generateToken(username);
 	}
 	
 }

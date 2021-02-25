@@ -6,8 +6,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.demo.domain.Pi;
-import com.example.demo.domain.User;
 import com.example.demo.dtos.HomeDTO;
 import com.example.demo.dtos.HomePiDTO;
 import com.example.demo.repositories.PiRepository;
@@ -31,6 +29,11 @@ public class UserService {
 		HomeDTO toReturn = new HomeDTO();
 		toReturn.setPi_ids(list);
 		return toReturn;
+	}
+	
+	public String getUsername() {
+		
+		return repo.findAll().get(0).getUsername();
 	}
 
 }

@@ -3,6 +3,7 @@ package com.example.demo.security;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -12,44 +13,36 @@ import io.jsonwebtoken.SignatureAlgorithm;
  * @author SERGI
  *
  */
+@Component
 public class Jwt {
 	
+	@Value("${secret.jwt}")
+	private String secret;
 	private static final int EXPIRATION = 3 * 60 * 60;
 	private static final SignatureAlgorithm ALGORITHM = SignatureAlgorithm.HS512;
 
-	/**
-	 * This jwt has a subject (it is a "special claim"), issue and expiration
-	 * days, @link {@link JwtHandler#ALGORITHM} and the @link
-	 * {@link JwtHandler#secret} key
-	 *
-	 * @param user
-	 * @return
-	 */
-									//GUARDAR SU USERNAME EN EL SUBJECT NO EL PIN!!
-	public static String generateToken(byte[] secret, String string) {
-		
+	public String generateToken(String string) {
 		return Jwts.builder().setSubject(string).setIssuedAt(new Date())
 				.setExpiration(new Date(new Date().getTime() * EXPIRATION)).signWith(ALGORITHM, secret).compact();
 	}
+	
+	public Boolean isValid(String token, String username) {
 
-	/**
-	 * A lot of things could be wrong, finally we just care about if the token
-	 * subject equals to username, that means that the user had signed up not long
-	 * ({@link JwtHandler#EXPIRATION} before.
-	 *
-	 * @param token
-	 * @param username
-	 * @return
-	 */
-	public static Boolean isValid(byte[] secret, String token, String username) {
-
-		if (username.equals(Jwt.getSubject(secret, token)))
-			return true;
-		return false;
+		try {
+			return (username.equals(getSubject(token)) && new Date().before(getExpiration(token)));	
+		}
+		catch (Exception e) {
+			System.out.println("token malformed");
+			return false;
+		}
 	}
-
-	public static String getSubject(byte[] secret, String token) {
+	
+	public String getSubject(String token) throws Exception {
 		
-		return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().getSubject();
+		return Jwts.parser().setSigningKey(this.secret).parseClaimsJws(token).getBody().getSubject();
+	}
+	public Date getExpiration(String token) throws Exception {
+		
+		return Jwts.parser().setSigningKey(this.secret).parseClaimsJws(token).getBody().getExpiration();
 	}
 }
