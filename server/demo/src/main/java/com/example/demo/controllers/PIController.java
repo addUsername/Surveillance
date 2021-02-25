@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.domain.enums.EnumStatus;
 import com.example.demo.services.FileParser;
 import com.example.demo.services.PiService;
 
@@ -27,11 +28,10 @@ public class PIController {
 		
 		if(file == null) return new ResponseEntity<String>(HttpStatus.UNAUTHORIZED);
 		
-		if(pis.changeStatusToUP(id)) {
+		if(pis.changeStatus(id, EnumStatus.UP)) {
 			fp.iniUpload(id);
 			return new ResponseEntity<String>(file,HttpStatus.ACCEPTED);
 		}
-		
 		return new ResponseEntity<String>(HttpStatus.UNAUTHORIZED);
 	}
 }

@@ -6,13 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Base64Utils;
 
+import com.example.demo.domain.enums.EnumStatus;
 import com.example.demo.services.FileParser;
+import com.example.demo.services.PiService;
 
 /**
  * Pi code needs to implement recived but not requested commands (apply config, status, on/off..) this operations
@@ -22,11 +21,12 @@ import com.example.demo.services.FileParser;
  */
 @Controller
 public class WSController {
+	
 
 	@Autowired
-	private SimpMessagingTemplate smt;
-	@Autowired
 	private FileParser fp;
+	@Autowired
+	private PiService pis;
 	
 	@MessageMapping("/stream/{id}")
 	public void getFrames(@DestinationVariable String id, Message<String> string) throws UnsupportedEncodingException {
@@ -34,18 +34,16 @@ public class WSController {
 		System.out.println(id);
 		
 		byte[] decoded = Base64Utils.decodeFromString(string.getPayload());
-		//byte[] decoded = Base64Utils.decodeFromString(new String(string.getContent().getBytes()));
 		fp.add(decoded, Integer.parseInt(id));
-		//smt.convertAndSendToUser(""+id, "/queue/reply", "hi bitchess, I'm from android this f shit works!! aa");
-		//smt.convertAndSendToUser(string.getToUser(), "/queue/reply", "hiiiiii");
-		//smt.convertAndSend("/topic/info/", "200");
 	}
 	/* to report changes status to server, prob not needed */
 	@MessageMapping("/string/{id}")
-	public void getString(@DestinationVariable String id, Message<String> string) throws UnsupportedEncodingException {
+	public void getString(@DestinationVariable int id, Message<String> string) throws UnsupportedEncodingException {
 		
-		System.out.println(id);
-		System.out.println(string.getPayload());
+		if(string.getPayload().contains("STATUS")) {
+			String status = string.getPayload().split("STATUS\n\n")[1];
+			pis.changeStatus(id,EnumStatus.valueOf(status));
+		}
 	}
 	/*
 	@SubscribeMapping("/info")

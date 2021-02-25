@@ -70,27 +70,19 @@ public class PiService {
 		return true;
 	}
 
-	public boolean changeStatusToUP(int id) {
-		Pi pi = repo.findById(Long.parseLong(""+id)).get();
-		if(pi == null) return false;
-		pi.setStatus(EnumStatus.UP);
-		repo.save(pi);
-		return true;
-	}
-	
-	public boolean changeStatusToRUNNING(int id) {
-		Pi pi = repo.findById(Long.parseLong(""+id)).get();
-		if(pi == null) return false;
-		pi.setStatus(EnumStatus.RUNNING);
-		repo.save(pi);
-		return true;		
-	}
-
 	public String getVideoExt(int id) {
 		Pi pi = repo.findById(Long.parseLong(""+id)).get();
 		if(pi == null) return null;
 		return pi.getPiSettings().getVideoExt().toString();
 		
+	}
+	public boolean changeStatus(int id, EnumStatus valueOf) {
+		
+		Pi pi = repo.findById(Long.parseLong(""+id)).get();
+		if(pi == null) return false;
+		pi.setStatus(valueOf);
+		repo.save(pi);
+		return true;
 	}
 
 }
