@@ -14,14 +14,14 @@ Server project, its principal mission is to proxy Pi(s) and Client projects. Eac
 - **/config/{idPiCamera}:** RPi's settings, customize metadata, mode, quality, etc..
 - **/stream/{idPiCamera}:** streams as .mjpeg or .hs264, to stream multiple RPi simultaneously use `/generalview`
 
-`pi` : Rest endpoints for RPi
+`/pi` : Rest endpoints for RPi
 - **/ini/{idPiCamera}:** RPi visits this on startup, to get server status and settings.properties, RPi takes the response code as flag, tryig to connect till 200 ok is received
 - **/push/{idPiCamera}** recives an img when something is detected, then a call to Android push notifications is triggered and one message is sended to `/topic/info`
 
-`/stream` : where RPi's websocket client connects, auth needed?
-- **/app/stream/{idPiCamera}** where RPi's websocket client connects and send video.
+`websocket` : where RPi's websocket client connects, auth on CONNECT
+- **/app/stream/{idPiCamera}:** where RPi's websocket client connects and send video.
 - **/topic/info:** where all RPis subscribe and listen mssg from server. ??Prob not needed
-- **{id}/queue/:** subscribe endpoint where send mssg to specifc RPi
+- **/topic/{id}:** subscribe endpoint where send mssg to specifc RPi
 
 ## Wishlist
 - Basic auth & security
