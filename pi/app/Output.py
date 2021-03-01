@@ -21,9 +21,7 @@ class Out:
         
     def flush(self):
         #self.ws.flush()
-        self.file.flush()
         print("flush")
         
     def close(self):
-        self.file.close()
         print("close")
