@@ -21,6 +21,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.dtos.PinDTO;
 import com.example.demo.dtos.RegisterDTO;
+import com.example.demo.exceptions.BadDumpException;
+import com.example.demo.exceptions.BadLoginException;
+import com.example.demo.exceptions.UserAlreadyExistsException;
 import com.example.demo.services.AuthService;
 
 @RestController
@@ -33,7 +36,7 @@ public class AUTHController {
 	@RequestMapping(value = "/login", method = RequestMethod.POST, consumes = {"multipart/form-data"})
 	public ResponseEntity<String> login(
 			@Valid @RequestPart("pin") PinDTO pin,
-			@RequestPart("data") MultipartFile file) throws IOException{
+			@RequestPart("data") MultipartFile file) throws IOException {
 	
 		if(auth.validateAndDecryptData(file)) {
 			auth.loadDb();
@@ -41,10 +44,9 @@ public class AUTHController {
 			if(auth.checkPin(pin.getPin())) {
 				String jwt = auth.generateToken(pin.getPin());
 				return new ResponseEntity<String>(jwt, HttpStatus.OK);
-			}			
-		}
-		
-		return new ResponseEntity<String>("ooops", HttpStatus.BAD_REQUEST);
+				
+			} else throw new BadLoginException();
+		} else throw new BadDumpException();
 	}
 	
 	@RequestMapping(value = "/register", method = RequestMethod.POST)
@@ -61,7 +63,7 @@ public class AUTHController {
 					new FileSystemResource( dumpDb), respHeaders, HttpStatus.OK
 			); 
 		}		
-		return new ResponseEntity<String>("user already exists", HttpStatus.BAD_REQUEST); 
+		throw new UserAlreadyExistsException(); 
 	}
 	
 
