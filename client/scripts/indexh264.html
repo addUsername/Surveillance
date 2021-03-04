@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body>
+<video id="player" controls></video>
+</body>
+<script>
+var jmuxer = "";
+window.onload = function() {
+
+    jmuxer = new JMuxer({
+        node: 'player',
+        mode: 'video',
+        flushingTime: 1000,
+        fps: 24,
+        debug: true
+     });
+}
+function handleEvent(e) {
+	console.log(e);
+	jmuxer.feed({
+            video: e
+    });
+}
+
+async function call() {
+	const response = await fetch("http://localhost:8080/user/stream/2");
+	const reader = response.body.getReader();
+
+	while (true) {
+	  const { value, done } = await reader.read();
+	  if (done) { break;}
+	  
+	  console.log('Received', value);
+	  handleEvent(value);
+	}
+}
+call();
+/*
+const response = fetch("http://localhost:8080/stream/1",
+{
+  method: 'get',
+});
+const reader = response.body.getReader();
+while (true) {
+  const { value, done } = reader.read();
+  if (done) break;
+  console.log(value);
+  handleEvent(value);
+}*/
+/*
+fetch("http://localhost:8080/stream/1").then(res => {
+    // stream the response
+    const reader = res.body.getReader()
+    const pump = () => reader.read()
+        .then(({ value, done }) => {
+            
+            handleEvent(value)
+
+            return pump
+    })    
+    // Start the reader
+    pump().then(() =>
+        console.log('Closed the stream, Done writing')
+    )
+}	)*/
+</script>
+<script type="text/javascript" src="jmuxer.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/js-base64@3.6.0/base64.min.js"></script>
+</html>
