@@ -20,10 +20,14 @@ import com.addusername.surv.R;
  */
 public class LogoFragment extends Fragment {
 
+    private static LogoFragment lf;
     public LogoFragment() {
         }
-    public static LogoFragment newInstance() {
-        return new LogoFragment();
+    public static LogoFragment newInstance(){
+        if(lf == null){
+            lf = new LogoFragment();
+        }
+        return lf;
     }
 
     @Override

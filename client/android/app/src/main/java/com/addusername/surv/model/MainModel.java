@@ -7,22 +7,27 @@ import com.addusername.surv.interfaces.PresenterOpsModel;
 
 import org.springframework.web.client.RestTemplate;
 
+import java.io.File;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class MainModel implements ModelOps {
 
-    PresenterOpsModel pom;
-    ExecutorService bgExecutor = Executors.newSingleThreadExecutor();
-    RestTemplate rt = new RestTemplate();
+    private PresenterOpsModel pom;
+    private final ExecutorService bgExecutor = Executors.newSingleThreadExecutor();
+    private RestTemplate rt = new RestTemplate();
+    private String FILESDIR;
+    private final String FILESQL = "dump.sql";
 
-    public MainModel(PresenterOpsModel pom) {
+    public MainModel(PresenterOpsModel pom, File file) {
+
         this.pom = pom;
+        this.FILESDIR = file.getAbsolutePath();
     }
 
     @Override
     public boolean existsUser() {
-        return false;
+        return new File(FILESDIR +"/"+ FILESQL).exists();
     }
 
     @Override
