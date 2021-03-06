@@ -3,12 +3,82 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FFFFFF"
     tools:context=".view.RegisterFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="399dp"
+        android:layout_marginLeft="10pt"
+        android:layout_marginTop="10pt"
+        android:layout_marginRight="10pt"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/editTextTextPersonName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10pt"
+            android:drawableStart="@drawable/ic_form_username"
+            android:drawableLeft="@drawable/ic_form_username"
+            android:drawablePadding="5pt"
+            android:ems="10"
+            android:hint="@string/form_username"
+            android:inputType="textPersonName" />
+
+        <EditText
+            android:id="@+id/editTextTextPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10pt"
+            android:drawableStart="@drawable/ic_form_pass"
+            android:drawableLeft="@drawable/ic_form_pass"
+            android:drawablePadding="5pt"
+            android:ems="10"
+            android:hint="@string/form_password"
+            android:inputType="textPassword" />
+
+        <EditText
+            android:id="@+id/editTextTextPassword2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10pt"
+            android:drawableStart="@drawable/ic_form_pass"
+            android:drawableLeft="@drawable/ic_form_pass"
+            android:drawablePadding="5pt"
+            android:ems="10"
+            android:hint="@string/form_password2"
+            android:inputType="textPassword" />
+
+        <EditText
+            android:id="@+id/editTextTextEmailAddress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10pt"
+            android:drawableStart="@drawable/ic_form_email"
+            android:drawableLeft="@drawable/ic_form_email"
+            android:drawablePadding="5pt"
+            android:ems="10"
+            android:hint="@string/form_email"
+            android:inputType="textEmailAddress" />
+
+        <EditText
+            android:id="@+id/editTextNumberPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10pt"
+            android:drawableStart="@drawable/ic_form_pin"
+            android:drawableLeft="@drawable/ic_form_pin"
+            android:drawablePadding="5pt"
+            android:ems="10"
+            android:hint="@string/form_pin"
+            android:inputType="numberPassword" />
+
+        <Button
+            android:id="@+id/button2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/form_button" />
+    </LinearLayout>
 
 </FrameLayout>
