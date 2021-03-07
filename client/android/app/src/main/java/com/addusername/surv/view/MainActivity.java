@@ -64,7 +64,10 @@ public class MainActivity extends AppCompatActivity implements ViewOps, ViewFrag
 
     @Override
     public void register(HashMap<String, EditText> components) {
-
+        pov.register(parseRegisterForm(components));
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.replace(R.id.fragment, LogoFragment.newInstance());
+        ft.remove(RegisterFragment.newInstance()).commit();
     }
 
     private RegisterForm parseRegisterForm(HashMap<String, EditText> components){

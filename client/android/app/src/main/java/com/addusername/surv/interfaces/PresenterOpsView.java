@@ -6,4 +6,6 @@ public interface PresenterOpsView {
     boolean existUser();
     void login(String pin);
     String[] validate(RegisterForm parseRegisterForm);
+
+    void register(RegisterForm parseRegisterForm);
 }

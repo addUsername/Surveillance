@@ -2,11 +2,11 @@ package com.addusername.surv.dtos;
 
 public class RegisterForm {
 
-    private String username;
-    private String pass;
-    private String pass2;
-    private String email;
-    private Integer pin;
+    public String username;
+    public String pass;
+    public String pass2;
+    public String email;
+    public Integer pin;
 
     public RegisterForm(){}
 

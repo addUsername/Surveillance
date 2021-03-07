@@ -33,4 +33,9 @@ public class MainPresenter implements PresenterOpsModel, PresenterOpsView {
     public String[] validate(RegisterForm rf) {
         return mo.validate(rf);
     }
+
+    @Override
+    public void register(RegisterForm rf) {
+        mo.doRegister(rf);
+    }
 }

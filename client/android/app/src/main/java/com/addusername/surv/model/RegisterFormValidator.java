@@ -25,14 +25,14 @@ public class RegisterFormValidator {
             list.add(error);
         }
         if(!validatePass(rf.getPass())){
-            error = "Password must contain: ";
+            error = "Password must contain: pass must contain: lowercase, uppercase, number and special char";
             if(rf.getPass().length() < 1){
                 error = "NOTSHOW";
             }
             list.add(error);
         }
         if(!validatePass(rf.getPass2())){
-            error = "Password2 must contain: ";
+            error = "Password2 must contain: pass must contain: lowercase, uppercase, number and special char";
             if(rf.getPass2().length() < 1){
                 error = "NOTSHOW";
             }
@@ -52,7 +52,7 @@ public class RegisterFormValidator {
     }
 
     private static boolean validatePass(String pass) {
-        return(pass.matches("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$"));
+        return(pass.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^\\da-zA-Z]).{6,15}$"));
     }
 
     private static boolean validateEmail(String email) {
