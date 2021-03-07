@@ -8,4 +8,6 @@ public interface ModelOps {
     boolean existsUser();
     void doLogin(LoginForm loginForm);
     void doRegister(RegisterForm registerForm);
+
+    String[] validate(RegisterForm rf);
 }

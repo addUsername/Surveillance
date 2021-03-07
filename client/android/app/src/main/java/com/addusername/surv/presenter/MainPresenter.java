@@ -1,5 +1,6 @@
 package com.addusername.surv.presenter;
 
+import com.addusername.surv.dtos.RegisterForm;
 import com.addusername.surv.interfaces.ModelOps;
 import com.addusername.surv.interfaces.PresenterOpsModel;
 import com.addusername.surv.interfaces.PresenterOpsView;
@@ -26,5 +27,10 @@ public class MainPresenter implements PresenterOpsModel, PresenterOpsView {
     @Override
     public void login(String pin) {
 
+    }
+
+    @Override
+    public String[] validate(RegisterForm rf) {
+        return mo.validate(rf);
     }
 }

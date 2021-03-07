@@ -8,6 +8,8 @@ import com.addusername.surv.interfaces.PresenterOpsModel;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -44,5 +46,12 @@ public class MainModel implements ModelOps {
     @Override
     public void doRegister(RegisterForm registerForm) {
 
+    }
+
+    @Override
+    public String[] validate(RegisterForm rf) {
+
+        List<String> list = RegisterFormValidator.getErrors(rf);
+        return (list.size() > 0)? list.toArray(new String[list.size()]) : null;
     }
 }
