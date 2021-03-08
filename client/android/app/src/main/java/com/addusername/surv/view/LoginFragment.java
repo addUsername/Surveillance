@@ -76,7 +76,7 @@ public class LoginFragment extends Fragment {
             Button b = (Button) v;
             pin += b.getText().toString();
             writeText();
-            if (pin.length() == 4) {
+            if (pin.length() == 5) {
                 ((MainActivity) getActivity()).login(pin);
                 pin = "";
             }

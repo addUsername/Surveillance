@@ -9,4 +9,5 @@ public interface ModelOps {
     void doLogin(LoginForm loginForm);
     void doRegister(RegisterForm registerForm);
     String[] validate(RegisterForm rf);
+    boolean isUserLogged();
 }

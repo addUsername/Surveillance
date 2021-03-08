@@ -35,17 +35,15 @@ import java.util.concurrent.Executors;
 
 public class MainModel implements ModelOps {
 
-    private PresenterOpsModel pom;
+    private final PresenterOpsModel pom;
     private final ExecutorService bgExecutor = Executors.newSingleThreadExecutor();
-    private RestTemplate rt;
-    private String FILESDIR;
-    private final String FILESQL = "dump2.sql";
+    private final AuthService auth;
+
 
     public MainModel(PresenterOpsModel pom, File file) {
 
         this.pom = pom;
-        this.FILESDIR = file.getAbsolutePath();
-        this.rt = new RestTemplate();
+        this.auth = new AuthService(file.getAbsolutePath(),"http://192.168.1.51:8080");
     }
 
     @Override
@@ -53,112 +51,28 @@ public class MainModel implements ModelOps {
 
         this.bgExecutor.execute(new Runnable() {
             @Override
-            public void run() {
-
-                MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-
-                Resource content = null;
-                try {
-                    content = new MultipartByteArrayResource(FileUtils.readFileToByteArray(new File(FILESDIR +"/"+ FILESQL)), FILESQL);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                // dump.sql
-                HttpHeaders headers = new HttpHeaders();
-                headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-                HttpEntity<Resource> requestEntityBody = new HttpEntity<Resource>(content, headers);
-
-                // pinDTO
-                HttpHeaders head = new HttpHeaders();
-                head.setContentType(MediaType.APPLICATION_JSON);
-                HttpEntity<String> pinEntity = new HttpEntity<>("{ \"pin\":"+loginForm.getPin()+"}",head);
-
-                body.add("data", requestEntityBody);
-                body.add("pin", pinEntity);
-
-                HttpHeaders requestHeaders = new HttpHeaders();
-                requestHeaders.setContentType(MediaType.MULTIPART_FORM_DATA);
-                HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, requestHeaders);
-                ResponseEntity<String> response = null;
-                try {
-
-                    response = rt.exchange("http://192.168.1.51:8080/auth/login", HttpMethod.POST, requestEntity, String.class);
-
-                    Log.d("Response:", response.toString());
-                } catch (Exception exception) {
-                    Log.d("loging", exception.getMessage());
-                }
-            }
+            public void run() { pom.loginReturn(auth.doLogin(loginForm)); }
         });
     }
-
     @Override
     public void doRegister(RegisterForm registerForm) {
 
-        Log.d("reg","doRegister");
         this.bgExecutor.execute(new Runnable() {
-
             @Override
-            public void run() {
-                Log.d("reg","run");
-                HttpHeaders headers = new HttpHeaders();
-                headers.setContentType(MediaType.APPLICATION_JSON);
-                JSONObject body = new JSONObject();
-                for (Field field : registerForm.getClass().getDeclaredFields()) {
-                    try {
-                        body.put(field.getName(), field.get(registerForm));
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-                Log.d("reg","json = "+body.toString());
-                HttpEntity<String> request =
-                        new HttpEntity<String>(body.toString(), headers);
-
-                ResponseEntity<byte[]> response = rt.exchange("http://192.168.1.51:8080/auth/register", HttpMethod.POST, request, byte[].class);
-                Log.d("reg","body size = "+response.getBody().length);
-
-                try {
-                    Log.d("reg","writting file to "+FILESDIR +"/"+ FILESQL);
-                    FileOutputStream fos = new FileOutputStream(FILESDIR +"/"+ FILESQL);
-                    fos.write(response.getBody());
-                    fos.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                Log.d("reg","exist file: "+existsUser());
-            }
+            public void run() { pom.registerReturn(auth.doRegister(registerForm)); }
         });
     }
 
     @Override
     public String[] validate(RegisterForm rf) {
-
-        List<String> list = RegisterFormValidator.getErrors(rf);
-        return (list.size() > 0)? list.toArray(new String[list.size()]) : null;
+        return auth.validate(rf);
     }
 
-    public class MultipartByteArrayResource extends ByteArrayResource{
+    @Override
+    public boolean isUserLogged() { return auth.isUsserLogged(); }
 
-        private String fileName;
-
-        public MultipartByteArrayResource(byte[] byteArray, String filename) {
-            super(byteArray);
-            this.fileName = filename;
-        }
-
-        public String getFilename() {
-            return fileName;
-        }
-
-        public void setFilename(String fileName) {
-            this.fileName= fileName;
-        }
-    }
-    
     @Override
     public boolean existsUser() {
-        return new File(FILESDIR +"/"+ FILESQL).exists();
+        return auth.existsUser();
     }
 }

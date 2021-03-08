@@ -30,15 +30,17 @@ public class MainActivity extends AppCompatActivity implements ViewOps, ViewFrag
         pov = new MainPresenter(this, getApplicationContext().getFilesDir());
         loadFragment();
     }
-
-    private void loadFragment() {
+    @Override
+    public void loadFragment() {
 
         FragmentTransaction ft = fm.beginTransaction();
-        if(pov.existUser()){
-            ft.replace(R.id.fragment,LoginFragment.newInstance());
-            //ft.remove(LogoFragment.newInstance());
-        }else {
+        if(!pov.existUser()){
             ft.replace(R.id.fragment, RegisterFragment.newInstance());
+            //ft.remove(LogoFragment.newInstance());
+        }else if(!pov.isUserLogged()) {
+            ft.replace(R.id.fragment,LoginFragment.newInstance());
+        }else {
+            ft.replace(R.id.fragment,HomeFragment.newInstance());
         }
         ft.commit();
     }
@@ -54,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements ViewOps, ViewFrag
 
     @Override
     public boolean validateComponents(HashMap<String, EditText> components) {
-        String[] erros = pov.validate(parseRegisterForm(components));
+        String[] erros = pov.validate(components);
         if(erros == null) return true;
         for(String error: erros){
             if(!error.equals("NOTSHOW"))Toast.makeText(getBaseContext(),error,Toast.LENGTH_SHORT).show();
@@ -64,23 +66,11 @@ public class MainActivity extends AppCompatActivity implements ViewOps, ViewFrag
 
     @Override
     public void register(HashMap<String, EditText> components) {
-        pov.register(parseRegisterForm(components));
+        pov.register(components);
         FragmentTransaction ft = fm.beginTransaction();
         ft.replace(R.id.fragment, LogoFragment.newInstance());
         ft.remove(RegisterFragment.newInstance()).commit();
     }
-
-    private RegisterForm parseRegisterForm(HashMap<String, EditText> components){
-        RegisterForm rf = new RegisterForm();
-        rf.setUsername(components.get("username").getText().toString());
-        rf.setPass(components.get("pass").getText().toString());
-        rf.setPass2(components.get("pass2").getText().toString());
-        rf.setEmail(components.get("email").getText().toString());
-        if(components.get("pin").getText().toString().equals("")){
-            rf.setPin(0);
-        }else{
-            rf.setPin(Integer.parseInt(components.get("pin").getText().toString()));
-        }
-        return rf;
-    }
+    @Override
+    public void showMessage(String error) { Toast.makeText(getBaseContext(),error,Toast.LENGTH_SHORT).show(); }
 }
