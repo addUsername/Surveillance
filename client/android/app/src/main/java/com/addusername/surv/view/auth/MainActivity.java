@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements ViewOps, ViewFrag
     private void startUserActivity() {
         Intent myIntent = new Intent(MainActivity.this, UserActivity.class);
         myIntent.putExtra("token", pov.getToken());
+        myIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         MainActivity.this.startActivity(myIntent);
     }
 

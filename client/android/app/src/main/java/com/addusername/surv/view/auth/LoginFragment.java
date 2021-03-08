@@ -14,11 +14,6 @@ import android.widget.TextView;
 
 import com.addusername.surv.R;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link LoginFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class LoginFragment extends Fragment {
 
 
@@ -27,9 +22,8 @@ public class LoginFragment extends Fragment {
     private Button[] numButtons;
     private static LoginFragment lf;
 
-    public LoginFragment() {
-        // Required empty public constructor
-    }
+    public LoginFragment() {}
+
     public static LoginFragment newInstance() {
         if(lf == null){
             lf = new LoginFragment();
@@ -40,7 +34,6 @@ public class LoginFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
@@ -61,7 +54,6 @@ public class LoginFragment extends Fragment {
         for(Button b: numButtons){
             b.setOnClickListener(numButtonsListener);
         }
-
     }
 
     @Override

@@ -4,7 +4,6 @@ import com.addusername.surv.dtos.LoginForm;
 import com.addusername.surv.dtos.RegisterForm;
 import com.addusername.surv.interfaces.ModelOps;
 import com.addusername.surv.interfaces.PresenterOpsModel;
-import com.addusername.surv.model.auth.AuthService;
 
 import java.io.File;
 import java.util.concurrent.ExecutorService;
