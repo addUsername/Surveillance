@@ -51,6 +51,9 @@ public class MainModel implements ModelOps {
     public String getToken() { return auth.getToken(); }
 
     @Override
+    public String getHost() { return auth.getHost(); }
+
+    @Override
     public boolean existsUser() {
         return auth.existsUser();
     }

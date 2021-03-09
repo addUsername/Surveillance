@@ -11,4 +11,6 @@ public interface ModelOps {
     String[] validate(RegisterForm rf);
     boolean isUserLogged();
     String getToken();
+
+    String getHost();
 }

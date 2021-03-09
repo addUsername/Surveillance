@@ -1,6 +1,7 @@
 package com.addusername.surv.presenter;
 
 import com.addusername.surv.dtos.HomeDTO;
+import com.addusername.surv.dtos.PiDTO;
 import com.addusername.surv.interfaces.ModelOpsUser;
 import com.addusername.surv.interfaces.PresenterOpsModelUser;
 import com.addusername.surv.interfaces.PresenterOpsViewUser;
@@ -13,8 +14,8 @@ public class UserPresenter implements PresenterOpsViewUser, PresenterOpsModelUse
     private ModelOpsUser mou;
     private ViewOpsHome voh;
 
-    public UserPresenter(String token, ViewOpsHome voh) {
-        mou = new UserModel(this,token);
+    public UserPresenter(String token, ViewOpsHome voh, String host) {
+        mou = new UserModel(this,token, host);
         this.voh = voh;
     }
 
@@ -22,9 +23,19 @@ public class UserPresenter implements PresenterOpsViewUser, PresenterOpsModelUse
     public void doGetHome() {
         mou.doGetHome();
     }
-
+    @Override
+    public void doAddRpi(PiDTO piDTO) {mou.doAddRpi(piDTO);}
     @Override
     public void homeReturn(HomeDTO home) {
         voh.printHome(home);
+    }
+
+    @Override
+    public void addRpiReturn(boolean added) {
+        if(added){
+            doGetHome();
+        } else {
+            voh.showMessage("Some error ocurred");
+        }
     }
 }

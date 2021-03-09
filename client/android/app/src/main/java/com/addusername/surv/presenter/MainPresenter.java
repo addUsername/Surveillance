@@ -44,9 +44,10 @@ public class MainPresenter implements PresenterOpsModel, PresenterOpsView {
     }
     @Override
     public boolean isUserLogged() { return mo.isUserLogged(); }
-
     @Override
     public String getToken() {return mo.getToken();}
+    @Override
+    public String getHost() {return mo.getHost(); }
 
     private RegisterForm parseRegisterForm(HashMap<String, EditText> components){
         RegisterForm rf = new RegisterForm();

@@ -12,4 +12,5 @@ public interface PresenterOpsView extends Serializable {
     void register(HashMap<String, EditText> parseRegisterForm);
     boolean isUserLogged();
     String getToken();
+    String getHost();
 }

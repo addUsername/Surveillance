@@ -32,7 +32,6 @@ public class AuthService {
     private final String FILESQL = "dump2.sql";
     private String TOKEN;
 
-
     public AuthService(String path, String host) {
         this.FILESDIR = path;
         this.HOST = host;
@@ -127,6 +126,8 @@ public class AuthService {
     }
     public boolean isUsserLogged() { return (TOKEN != null); }
     public String getToken(){ return TOKEN; }
+    public String getHost() {return HOST; }
+
     public class MultipartByteArrayResource extends ByteArrayResource {
 
         private final String fileName;
