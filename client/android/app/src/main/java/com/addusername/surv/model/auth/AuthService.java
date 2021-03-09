@@ -70,7 +70,7 @@ public class AuthService {
 
             response = rt.exchange(HOST+"/auth/login", HttpMethod.POST, requestEntity, String.class);
         } catch (Exception exception) {
-            Log.d("error", exception.getMessage());
+            Log.d("auth", "doLogin()"+exception.getMessage());
         }
 
         if(response.getStatusCode().is2xxSuccessful()){
@@ -82,7 +82,6 @@ public class AuthService {
 
     public boolean doRegister(RegisterForm registerForm) {
 
-        Log.d("reg","run");
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         JSONObject body = new JSONObject();
@@ -93,16 +92,22 @@ public class AuthService {
                 //e.printStackTrace();
             }
         }
-        Log.d("reg","json = "+body.toString());
+        Log.d("auth","doReg() json = "+body.toString());
         HttpEntity<String> request =
                 new HttpEntity<>(body.toString(), headers);
 
-        ResponseEntity<byte[]> response = rt.exchange(HOST+"/auth/register", HttpMethod.POST, request, byte[].class);
-        Log.d("reg","body size = "+response.getBody().length);
+        ResponseEntity<byte[]> response = null;
+        try{
+            response = rt.exchange(HOST+"/auth/register", HttpMethod.POST, request, byte[].class);
+        } catch (Exception e){
+            Log.d("auth","doReg() exception: "+e.getMessage());
+            e.printStackTrace();
+        }
+        Log.d("auth","doReg() body size = "+response.getBody().length);
 
         if(response.getStatusCode().is2xxSuccessful()){
             try {
-                Log.d("reg","writting file to "+FILESDIR +"/"+ FILESQL);
+                Log.d("auth","doReg() writting file to "+FILESDIR +"/"+ FILESQL);
                 FileOutputStream fos = new FileOutputStream(FILESDIR +"/"+ FILESQL);
                 fos.write(response.getBody());
                 fos.close();
@@ -112,7 +117,7 @@ public class AuthService {
                 return false;
             }
         }
-        Log.d("reg","exist file: "+existsUser());
+        Log.d("auth","doReg() exist file: "+existsUser());
         return true;
     }
 
@@ -121,12 +126,10 @@ public class AuthService {
         List<String> list = RegisterFormValidator.getErrors(rf);
         return (list.size() > 0)? list.toArray(new String[list.size()]) : null;
     }
-    public boolean existsUser() {
-        return new File(FILESDIR +"/"+ FILESQL).exists();
-    }
+    public boolean existsUser() { return new File(FILESDIR +"/"+ FILESQL).exists(); }
     public boolean isUsserLogged() { return (TOKEN != null); }
     public String getToken(){ return TOKEN; }
-    public String getHost() {return HOST; }
+    public String getHost() { return HOST; }
 
     public class MultipartByteArrayResource extends ByteArrayResource {
 

@@ -4,21 +4,19 @@ import com.addusername.surv.dtos.PiDTO;
 import com.addusername.surv.interfaces.ModelOpsUser;
 import com.addusername.surv.interfaces.PresenterOpsModelUser;
 
-import org.springframework.http.HttpHeaders;
-
+import java.io.File;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class UserModel implements ModelOpsUser {
 
     private final PresenterOpsModelUser pomu;
-    private final HttpHeaders headers = new HttpHeaders();
     private final ExecutorService bgExecutor = Executors.newSingleThreadExecutor();
     private final UserService us;
 
-    public UserModel(PresenterOpsModelUser pomu, String token, String host) {
+    public UserModel(PresenterOpsModelUser pomu, String token, String host, File filesDir) {
         this.pomu = pomu;
-        us = new UserService(token,host);
+        us = new UserService(token,host, filesDir.getAbsolutePath());
     }
 
     @Override
@@ -27,7 +25,6 @@ public class UserModel implements ModelOpsUser {
             @Override
             public void run() { pomu.homeReturn(us.doHome()); }
         });
-
     }
 
     @Override
@@ -36,7 +33,10 @@ public class UserModel implements ModelOpsUser {
             @Override
             public void run() {
                 pomu.addRpiReturn(us.doAddRpi(piDTO));
+                doDump();
             }
         });
     }
+
+    private void doDump(){ us.doDump(); }
 }

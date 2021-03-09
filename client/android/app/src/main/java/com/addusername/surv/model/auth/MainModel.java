@@ -43,16 +43,12 @@ public class MainModel implements ModelOps {
     public String[] validate(RegisterForm rf) {
         return auth.validate(rf);
     }
-
     @Override
     public boolean isUserLogged() { return auth.isUsserLogged(); }
-
     @Override
     public String getToken() { return auth.getToken(); }
-
     @Override
     public String getHost() { return auth.getHost(); }
-
     @Override
     public boolean existsUser() {
         return auth.existsUser();

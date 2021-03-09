@@ -7,22 +7,25 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.addusername.surv.R;
+import com.addusername.surv.interfaces.MenuListener;
 import com.addusername.surv.interfaces.ViewFragmentOpsUser;
 import com.addusername.surv.view.auth.LoginFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-public class AddRPiFragment extends Fragment {
+public class AddRPiFragment extends Fragment implements MenuListener {
 
     public static AddRPiFragment af;
     private ViewFragmentOpsUser vfou;
     private EditText alias;
     private EditText location;
     private FloatingActionButton button;
+    private MenuListener ml;
 
     public AddRPiFragment() {}
     public static AddRPiFragment newInstance() {
@@ -45,6 +48,7 @@ public class AddRPiFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         vfou  = (UserActivity) getActivity();
+        ml = (UserActivity) getActivity();
         alias = view.findViewById(R.id.alias);
         location = view.findViewById(R.id.location);
         alias.setOnFocusChangeListener(listener);
@@ -62,4 +66,6 @@ public class AddRPiFragment extends Fragment {
     public void onClick(View view){
         vfou.addRpi(alias.getText().toString(), location.getText().toString());
     }
+    @Override
+    public void menuClick(MenuItem menuItem) { ml.menuClick(menuItem); }
 }

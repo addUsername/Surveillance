@@ -6,27 +6,27 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.addusername.surv.R;
-import com.addusername.surv.dtos.HomeDTO;
 import com.addusername.surv.interfaces.MenuListener;
 import com.addusername.surv.interfaces.ViewFragmentOpsUser;
-import com.addusername.surv.view.auth.LoginFragment;
-import com.addusername.surv.view.user.UserActivity;
 
 
-public class HomeFragment extends Fragment implements MenuListener {
+public class LogoUserFragment extends Fragment implements MenuListener {
 
-    private ViewFragmentOpsUser vfou;
     private MenuListener ml;
-    private final HomeDTO homedto;
-    public HomeFragment(HomeDTO home) {
-        homedto = home;
+    private static LogoUserFragment luf;
+
+    public LogoUserFragment() {}
+    public static LogoUserFragment newInstance() {
+        if(luf == null){
+            luf = new LogoUserFragment();
+        }
+        return luf;
     }
 
     @Override
@@ -36,19 +36,13 @@ public class HomeFragment extends Fragment implements MenuListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home, container, false);
+        return inflater.inflate(R.layout.fragment_logo_user, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        vfou = (UserActivity) getActivity();
-        ml = (UserActivity) getActivity();
-        Log.d("aa", "aaaaaaa");
-        //Create layout
-        //create and add viewcards
-
+        ml  = (UserActivity) getActivity();
     }
     @Override
     public void menuClick(MenuItem menuItem) { ml.menuClick(menuItem); }

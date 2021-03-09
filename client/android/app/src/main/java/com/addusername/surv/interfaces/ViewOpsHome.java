@@ -4,5 +4,5 @@ import com.addusername.surv.dtos.HomeDTO;
 
 public interface ViewOpsHome {
     void printHome(HomeDTO home);
-    void showMessage(String some_error_ocurred);
+    void showMessage(String mssg);
 }
