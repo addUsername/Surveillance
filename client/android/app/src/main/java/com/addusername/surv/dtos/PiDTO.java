@@ -1,8 +1,8 @@
 package com.addusername.surv.dtos;
 
 public class PiDTO {
-    private String alias;
-    private String location;
+    public String alias;
+    public String location;
 
     public PiDTO(){}
     public PiDTO(String alias, String location) {

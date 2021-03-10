@@ -62,6 +62,9 @@ public class UserActivity extends AppCompatActivity implements ViewOpsHome, View
                 ft.replace(R.id.fragmentUser, AddRPiFragment.newInstance());
                 ft.commit();
                 break;
+            case R.id.menu_home:
+                Log.d("user","menu_home");
+                povu.doGetHome();
 
         }
     }
@@ -73,7 +76,14 @@ public class UserActivity extends AppCompatActivity implements ViewOpsHome, View
         ft.commit();
     }
     @Override
-    public void showMessage(String mssg) { Toast.makeText(getBaseContext(),mssg,Toast.LENGTH_SHORT).show(); }
+    public void showMessage(String mssg) { runOnUiThread(
+        new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(getBaseContext(), mssg, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
     @Override
     public void addRpi(String alias, String location) { povu.doAddRpi(new PiDTO(alias, location)); }
 }

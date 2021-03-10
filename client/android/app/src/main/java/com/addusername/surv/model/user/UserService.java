@@ -9,6 +9,7 @@ import org.json.JSONObject;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
@@ -51,7 +52,9 @@ public class UserService {
             }
         }
         Log.d("user","doAddpi() PIDTO: "+body.toString());
-        HttpEntity<String> request = new HttpEntity<>(body.toString(), headers);
+        HttpHeaders custom = headers;
+        custom.setContentType(MediaType.APPLICATION_JSON);;
+        HttpEntity<String> request = new HttpEntity<>(body.toString(), custom);
         ResponseEntity<String> response ;
 
         try {
@@ -62,7 +65,6 @@ public class UserService {
             Log.d("user","doAddpi() exception: "+e.getMessage());
             return false;
         }
-
     }
 
     public void doDump() {

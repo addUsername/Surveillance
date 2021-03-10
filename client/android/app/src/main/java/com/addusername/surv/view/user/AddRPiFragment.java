@@ -54,6 +54,16 @@ public class AddRPiFragment extends Fragment implements MenuListener {
         alias.setOnFocusChangeListener(listener);
         location.setOnFocusChangeListener(listener);
         button = view.findViewById(R.id.add_button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String a = alias.getText().toString();
+                String l = location.getText().toString();
+                alias.setText(null);
+                location.setText(null);
+                vfou.addRpi(a, l);
+            }
+        });
     }
     private View.OnFocusChangeListener listener = new View.OnFocusChangeListener() {
         @Override
@@ -63,9 +73,6 @@ public class AddRPiFragment extends Fragment implements MenuListener {
             }
         }
     };
-    public void onClick(View view){
-        vfou.addRpi(alias.getText().toString(), location.getText().toString());
-    }
     @Override
     public void menuClick(MenuItem menuItem) { ml.menuClick(menuItem); }
 }
