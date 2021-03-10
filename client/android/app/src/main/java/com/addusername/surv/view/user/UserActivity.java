@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -15,14 +16,19 @@ import com.addusername.surv.dtos.HomeDTO;
 import com.addusername.surv.dtos.PiDTO;
 import com.addusername.surv.interfaces.MenuListener;
 import com.addusername.surv.interfaces.PresenterOpsViewUser;
+import com.addusername.surv.interfaces.SetImages;
 import com.addusername.surv.interfaces.ViewFragmentOpsUser;
 import com.addusername.surv.interfaces.ViewOpsHome;
 import com.addusername.surv.presenter.UserPresenter;
+
+import java.io.InputStream;
+import java.util.List;
 
 public class UserActivity extends AppCompatActivity implements ViewOpsHome, ViewFragmentOpsUser, MenuListener {
 
 
     private PresenterOpsViewUser povu;
+    private SetImages homeFragment;
     private final FragmentManager fm = getSupportFragmentManager();
 
     @Override
@@ -72,18 +78,33 @@ public class UserActivity extends AppCompatActivity implements ViewOpsHome, View
     public void printHome(HomeDTO home) {
         //TODO identify and delete old fragment
         FragmentTransaction ft = fm.beginTransaction();
-        ft.replace(R.id.fragmentUser, new HomeFragment(home));
+        HomeFragment hf =  new HomeFragment(home);
+        homeFragment = hf;
+        ft.replace(R.id.fragmentUser, hf);
         ft.commit();
     }
+
     @Override
-    public void showMessage(String mssg) { runOnUiThread(
-        new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(getBaseContext(), mssg, Toast.LENGTH_SHORT).show();
-            }
-        });
+    public void showMessage(String mssg) {
+        runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(getBaseContext(), mssg, Toast.LENGTH_SHORT).show();
+                }
+            });
+    }
+
+    @Override
+    public void setImg(InputStream img, Integer id) {
+        runOnUiThread(new Runnable() {
+              @Override
+              public void run() {
+                  homeFragment.setImg(img,id);
+              }
+          });
     }
     @Override
     public void addRpi(String alias, String location) { povu.doAddRpi(new PiDTO(alias, location)); }
+    @Override
+    public void loadImgs(List<Integer> raspberryIds) { povu.loadImgs(raspberryIds);}
 }

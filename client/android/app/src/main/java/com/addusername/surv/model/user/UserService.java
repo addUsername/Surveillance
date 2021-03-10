@@ -1,5 +1,6 @@
 package com.addusername.surv.model.user;
 
+import android.content.res.AssetManager;
 import android.util.Log;
 
 import com.addusername.surv.dtos.HomeDTO;
@@ -13,7 +14,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.ByteArrayInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.lang.reflect.Field;
 
 public class UserService {
@@ -22,6 +25,7 @@ public class UserService {
     private final String HOST;
     private final String PATH;
     private final String FILESQL = "dump2.sql"; //TODO DUPLICATE ATTRIBUTE CHANGE THS TO BE ALWAYS EQUALS TO AuthService.FILESQL
+    private final String MOCKIMG = "res/raw/mock.jpg";
     private final HttpHeaders headers;
 
     public UserService(String token, String host, String absolutePath){
@@ -86,5 +90,31 @@ public class UserService {
         }catch (Exception e){
                 Log.d("user","doDump() exception: "+e.getMessage());
         }
+    }
+
+    public InputStream getImg(Integer i) {
+
+        HttpEntity<String> request = new HttpEntity<>("", headers);
+        ResponseEntity<byte[]> response ;
+
+        try {
+            response = rt.exchange(HOST + "/user/img/"+i, HttpMethod.GET, request, byte[].class);
+
+            if (response.getStatusCode().is2xxSuccessful()){
+                Log.d("user","getImg() ok");
+                return new ByteArrayInputStream(response.getBody());
+            }else{
+                Log.d("user","getImg() BAD response code: "+response.getStatusCode());
+            }
+        }catch (Exception e){
+            Log.d("user","getImg() exception: "+e.getMessage());
+            return null;
+        }
+        return null;
+    }
+
+    public InputStream getImgMock() {
+        Log.d("user","getImgMock() getting img mock");
+        return this.getClass().getClassLoader().getResourceAsStream(MOCKIMG);
     }
 }
