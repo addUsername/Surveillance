@@ -1,8 +1,5 @@
 package com.addusername.surv.model.user;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-
 import com.addusername.surv.dtos.PiDTO;
 import com.addusername.surv.interfaces.ModelOpsUser;
 import com.addusername.surv.interfaces.PresenterOpsModelUser;
@@ -57,6 +54,28 @@ public class UserModel implements ModelOpsUser {
                 }
             });
         }
+    }
+
+    @Override
+    public void getScreenShot(int rpiId) {
+        this.bgExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+
+            }
+        });
+
+    }
+
+    @Override
+    public void getStream(int rpiId) {
+        this.bgExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+
+            }
+        });
+
     }
 
     private void doDump(){ us.doDump(); }

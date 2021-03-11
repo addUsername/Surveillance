@@ -107,4 +107,16 @@ public class UserActivity extends AppCompatActivity implements ViewOpsHome, View
     public void addRpi(String alias, String location) { povu.doAddRpi(new PiDTO(alias, location)); }
     @Override
     public void loadImgs(List<Integer> raspberryIds) { povu.loadImgs(raspberryIds);}
+
+    @Override
+    public void handleHomeClickEvent(int rpiId, int actionId) {
+        switch (actionId){
+            case R.id.popup_img:
+                povu.getScreenShot(rpiId);
+                break;
+            case R.id.popup_video:
+                povu.getStream(rpiId);
+                break;
+        }
+    }
 }

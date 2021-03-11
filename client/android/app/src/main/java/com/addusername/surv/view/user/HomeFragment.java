@@ -1,12 +1,8 @@
 package com.addusername.surv.view.user;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.text.LineBreaker;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -20,9 +16,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.addusername.surv.R;
 import com.addusername.surv.dtos.HomeDTO;
@@ -30,11 +27,9 @@ import com.addusername.surv.dtos.HomePiDTO;
 import com.addusername.surv.interfaces.MenuListener;
 import com.addusername.surv.interfaces.SetImages;
 import com.addusername.surv.interfaces.ViewFragmentOpsUser;
-import com.google.android.material.resources.TextAppearance;
 
 import java.io.InputStream;
 import java.util.HashMap;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 public class HomeFragment extends Fragment implements MenuListener, SetImages {
@@ -84,6 +79,9 @@ public class HomeFragment extends Fragment implements MenuListener, SetImages {
 
         for(HomePiDTO pi: homedto.getPi_ids()){
             LinearLayout ll = new LinearLayout(this.getContext());
+            // TODO this is safe?? i need this bc PopupMenu onclick..
+            ll.setId(Math.toIntExact(pi.getId()));
+
             ll.setLayoutParams(params);
             ll.setOrientation(LinearLayout.VERTICAL);
             ll.setClickable(true);
@@ -116,8 +114,20 @@ public class HomeFragment extends Fragment implements MenuListener, SetImages {
         @Override
         public boolean onLongClick(View v) {
             Log.d("home","loongclick");
+
+            PopupMenu popup = new PopupMenu(getContext(), v);
+            popup.getMenuInflater().inflate(R.menu.menu_popup, popup.getMenu());
+
+            popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                private final int RPi_id = v.getId();
+                public boolean onMenuItemClick(MenuItem item) {
+                    vfou.handleHomeClickEvent(RPi_id, item.getItemId());
+                    return true;
+                }
+            });
+            popup.show();//showing popup menu
             return true; //para diferenciar del onclick
-        }
+            }
     };
     private View.OnClickListener imgListener = new View.OnClickListener() {
         @Override
@@ -125,7 +135,7 @@ public class HomeFragment extends Fragment implements MenuListener, SetImages {
             for(Integer id: imgs.keySet()){
                 if(imgs.get(id).getId() == v.getId()){
                     //vfou.getStream(id);
-                    Log.d("home","shortclick");
+                    vfou.handleHomeClickEvent(v.getId(), R.id.popup_video);
                     break;
                 }
             }

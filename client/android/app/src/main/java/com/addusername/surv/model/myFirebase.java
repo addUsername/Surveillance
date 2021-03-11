@@ -1,5 +1,6 @@
 package com.addusername.surv.model;
 
+import android.content.Intent;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -16,7 +17,6 @@ public class myFirebase extends FirebaseMessagingService {
             Log.d("noti","mssg received(), body: " + remoteMessage.getNotification().getBody());
 
         }
-
         if (remoteMessage.getData().size() > 0) {
             Log.d("noti","mssg received(), data size > 0 " +  remoteMessage.getData().toString());
         }

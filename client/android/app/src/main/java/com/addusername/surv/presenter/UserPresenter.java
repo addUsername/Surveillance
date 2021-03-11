@@ -21,7 +21,6 @@ public class UserPresenter implements PresenterOpsViewUser, PresenterOpsModelUse
         mou = new UserModel(this,token, host, filesDir);
         this.voh = voh;
     }
-
     @Override
     public void doGetHome() {
         mou.doGetHome();
@@ -31,12 +30,15 @@ public class UserPresenter implements PresenterOpsViewUser, PresenterOpsModelUse
     @Override
     public void loadImgs(List<Integer> raspberryIds) { mou.loadImgs(raspberryIds); }
     @Override
+    public void getScreenShot(int rpiId) { mou.getScreenShot(rpiId);}
+    @Override
+    public void getStream(int rpiId) { mou.getStream(rpiId);}
+    @Override
     public void homeReturn(HomeDTO home) {
         voh.printHome(home);
     }
     @Override
     public void setImg(InputStream img, Integer id) { voh.setImg(img,id);}
-
     @Override
     public void addRpiReturn(boolean added) {
         if(added){
@@ -45,6 +47,4 @@ public class UserPresenter implements PresenterOpsViewUser, PresenterOpsModelUse
             voh.showMessage("Some error ocurred");
         }
     }
-
-
 }

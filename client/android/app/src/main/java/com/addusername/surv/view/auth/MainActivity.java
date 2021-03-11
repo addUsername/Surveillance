@@ -31,12 +31,23 @@ public class MainActivity extends AppCompatActivity implements ViewOps, ViewFrag
     private final FragmentManager fm = getSupportFragmentManager();
 
     @Override
+    protected void onRestart() {
+        super.onRestart();
+        startUserActivity();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         pov = new MainPresenter(this, getApplicationContext().getFilesDir());
-        loadFragment();
-
+        if (pov.getToken() != null) {
+            Log.d("noti","start user");
+            startUserActivity();
+        }else{
+            Log.d("noti",""+pov.getToken());
+            loadFragment();
+        }
     }
     @Override
     public void loadFragment() {
