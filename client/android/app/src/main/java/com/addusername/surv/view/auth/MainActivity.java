@@ -1,11 +1,14 @@
 package com.addusername.surv.view.auth;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -15,6 +18,10 @@ import com.addusername.surv.interfaces.ViewFragmentOps;
 import com.addusername.surv.interfaces.ViewOps;
 import com.addusername.surv.presenter.MainPresenter;
 import com.addusername.surv.view.user.UserActivity;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.HashMap;
 
@@ -29,6 +36,7 @@ public class MainActivity extends AppCompatActivity implements ViewOps, ViewFrag
         setContentView(R.layout.activity_main);
         pov = new MainPresenter(this, getApplicationContext().getFilesDir());
         loadFragment();
+
     }
     @Override
     public void loadFragment() {
@@ -80,4 +88,5 @@ public class MainActivity extends AppCompatActivity implements ViewOps, ViewFrag
     }
     @Override
     public void showMessage(String error) { Toast.makeText(getBaseContext(),error,Toast.LENGTH_SHORT).show(); }
+
 }

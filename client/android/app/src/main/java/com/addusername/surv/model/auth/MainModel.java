@@ -1,9 +1,18 @@
 package com.addusername.surv.model.auth;
 
+import android.util.Log;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+
 import com.addusername.surv.dtos.LoginForm;
 import com.addusername.surv.dtos.RegisterForm;
 import com.addusername.surv.interfaces.ModelOps;
 import com.addusername.surv.interfaces.PresenterOpsModel;
+import com.addusername.surv.view.auth.MainActivity;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.io.File;
 import java.util.concurrent.ExecutorService;
@@ -20,6 +29,40 @@ public class MainModel implements ModelOps {
 
         this.pom = pom;
         this.auth = new AuthService(file.getAbsolutePath(),"http://192.168.1.51:8080");
+        doFCM();
+    }
+
+    private void doFCM() {
+        //notification push token, send inside LoginForm in doLogin()
+        //this method will run always before login
+        this.bgExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                FirebaseMessaging.getInstance().getToken()
+                    .addOnCompleteListener(new OnCompleteListener<String>() {
+                        @Override
+                        public void onComplete(@NonNull Task<String> task) {
+                            if (!task.isSuccessful()) {
+                                Log.d("noti", "Fetching FCM registration token failed", task.getException());
+                                return;
+                            }
+                            String token = task.getResult();
+                            auth.setFCMtoken(token);
+                            Log.d("getToken() noti", token);
+                            //Toast.makeText(MainActivity.this, token, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+            }
+        });
+        /*
+        FirebaseMessaging.getInstance().subscribeToTopic("news").addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Toast.makeText(getApplicationContext(),"Success",Toast.LENGTH_LONG).show();
+                Log.d("subs","yay");
+            }
+        });
+        */
     }
 
     @Override

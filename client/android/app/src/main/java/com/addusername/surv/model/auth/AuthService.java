@@ -31,6 +31,7 @@ public class AuthService {
     private final String HOST;
     private final String FILESQL = "dump2.sql";
     private String TOKEN;
+    private String FCMtoken = "";
 
     public AuthService(String path, String host) {
         this.FILESDIR = path;
@@ -55,9 +56,12 @@ public class AuthService {
         HttpEntity<Resource> requestEntityBody = new HttpEntity<>(content, headers);
 
         // pinDTO
+        Log.d("token","doLogin() = "+this.FCMtoken);
+        loginForm.setToken(this.FCMtoken);
         HttpHeaders head = new HttpHeaders();
         head.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<String> pinEntity = new HttpEntity<>("{ \"pin\":"+loginForm.getPin()+"}",head);
+        Log.d("token",loginForm.toJsonString());
+        HttpEntity<String> pinEntity = new HttpEntity<>(loginForm.toJsonString(),head);
 
         body.add("data", requestEntityBody);
         body.add("pin", pinEntity);
@@ -84,6 +88,7 @@ public class AuthService {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
+        /*
         JSONObject body = new JSONObject();
         for (Field field : registerForm.getClass().getDeclaredFields()) {
             try {
@@ -92,11 +97,11 @@ public class AuthService {
                 //e.printStackTrace();
             }
         }
-        Log.d("auth","doReg() json = "+body.toString());
-        HttpEntity<String> request =
-                new HttpEntity<>(body.toString(), headers);
-
+         */
+        Log.d("auth","doReg() json = "+registerForm.toJsonString());
+        HttpEntity<String> request = new HttpEntity<>(registerForm.toJsonString(), headers);
         ResponseEntity<byte[]> response = null;
+
         try{
             response = rt.exchange(HOST+"/auth/register", HttpMethod.POST, request, byte[].class);
         } catch (Exception e){
@@ -130,6 +135,7 @@ public class AuthService {
     public boolean isUsserLogged() { return (TOKEN != null); }
     public String getToken(){ return TOKEN; }
     public String getHost() { return HOST; }
+    public void setFCMtoken(String fcMtoken) { this.FCMtoken = fcMtoken; }
 
     public class MultipartByteArrayResource extends ByteArrayResource {
 
