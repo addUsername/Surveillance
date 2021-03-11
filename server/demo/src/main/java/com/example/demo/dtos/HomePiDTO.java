@@ -8,4 +8,5 @@ public class HomePiDTO {
 
 	private Long id;
 	private String status;
+	private String alias;
 }

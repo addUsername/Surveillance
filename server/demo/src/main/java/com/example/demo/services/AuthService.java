@@ -24,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.domain.Pi;
 import com.example.demo.domain.User;
+import com.example.demo.dtos.PinDTO;
 import com.example.demo.dtos.RegisterDTO;
 import com.example.demo.repositories.UserRepository;
 import com.example.demo.security.Crypt;
@@ -50,9 +51,17 @@ public class AuthService {
 	@Value("${path.upload}")
 	private String uploadPath;
 	
-	public Boolean checkPin(Integer pin) {
-		Integer userPin = repo.findByPin(pin).get().getPin();
-		return (userPin != null)? true: false;
+	private String fcmtToken;
+	
+	public String getFcmtToken() { return fcmtToken; }
+	public Boolean checkPin(PinDTO pin) {
+		try {
+			repo.findByPin(pin.getPin()).get().getPin();
+			fcmtToken = pin.getToken();
+			return true;
+		}catch (Exception e) {
+			return false;
+		}
 	}
 
 	public boolean registerUser(@Valid RegisterDTO newUser) {
@@ -84,6 +93,7 @@ public class AuthService {
 		if(!validateData(file)) return false;
 		
 		try {
+			
 			Files.copy(file.getInputStream(),
 					new File(uploadPath).toPath(),
 					StandardCopyOption.REPLACE_EXISTING);
@@ -93,25 +103,31 @@ public class AuthService {
 					new File(uploadPath));
 			
 		} catch (IOException e) {
+			e.printStackTrace();
 			return false;
 		}
 		return true;
 	}
+	// TODO Check this file sizes, cool bug i've eaten max size is ~5Mb
 	private boolean validateData(MultipartFile file) {
-		return !(file.getSize() < 1000 || file.getSize() > 5000);
+		return !(file.getSize() < 1000 || file.getSize() > 50000);
 	}
 	
 	public void loadDb() {
+		InputStreamReader isr;
 		try (Connection conn = dataSource.getConnection()) {
 			Statement st = conn.createStatement();
 			st.execute( "DROP ALL OBJECTS DELETE FILES;");
-			InputStreamReader isr = new InputStreamReader( new FileInputStream(new File(uploadPath)));
-			RunScript.execute(conn, (Reader) isr );			
+			isr = new InputStreamReader( new FileInputStream(new File(uploadPath)));
+			RunScript.execute(conn, (Reader) isr );	
+			isr.close();			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
-		}		
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public String generateToken(Integer pin) {

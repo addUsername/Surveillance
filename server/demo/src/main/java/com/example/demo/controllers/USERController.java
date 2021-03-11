@@ -2,7 +2,10 @@ package com.example.demo.controllers;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
@@ -32,6 +35,7 @@ import com.example.demo.dtos.PiSettingsDTO;
 import com.example.demo.services.AuthService;
 import com.example.demo.services.FileParser;
 import com.example.demo.services.PiService;
+import com.example.demo.services.PushNotificationService;
 import com.example.demo.services.UserService;
 
 /**
@@ -53,8 +57,23 @@ public class USERController {
 	private PiService pis;	
 	@Autowired
 	private SimpMessagingTemplate messageSender;
+	@Autowired
+	private PushNotificationService pns;
 	
 
+	@RequestMapping(value = "/push/{id}", method = RequestMethod.POST)
+	public ResponseEntity<?> push(@PathVariable(value = "id") int id, @RequestPart("file") MultipartFile file, HttpServletRequest response ) throws UnknownHostException{
+		//TODO 
+		System.out.println("push to user");
+		System.out.println(file.getOriginalFilename());
+		System.out.println(file.getSize());
+		messageSender.convertAndSend("/topic/"+id+"/","STREAM\n\nid="+id);
+		
+		pns.push(id,file,"http://"+InetAddress.getLocalHost().getHostAddress()+":8080");
+		pis.changeStatus(id, EnumStatus.RUNNING);
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
+	
 	@CrossOrigin
 	@GetMapping( value = "/stream/{id}") //update
     public void stream(@PathVariable(value = "id") int id,
@@ -69,28 +88,6 @@ public class USERController {
 	    fp.writeStream(response.getOutputStream(), id, type);	   
 	    return;
     }
-	@GetMapping(value = "/sayHello/{id}/{string}") //TEST
-	public ResponseEntity<?> sayHello(@PathVariable(value = "id") int id, @PathVariable(value = "string") String string){
-		System.out.println("/topic/"+id+"/");
-		//messageSender.convertAndSendToUser(""+id, "/queue/reply", "hi bitchess, I'm from android this f shit works!! aa");
-		//messageSender.convertAndSend("/topic/info/", "\n\n"+string);
-		PiDTO pi = new PiDTO();
-		pi.setAlias(string);
-		pi.setLocation("location");
-		messageSender.convertAndSend("/topic/"+id+"/", pi);
-		//messageSender.convertAndSend("/topic/info/", "\n\n"+string);
-		return new ResponseEntity<>(HttpStatus.OK);
-	}
-	@RequestMapping(value = "/push/{id}", method = RequestMethod.POST)
-	public ResponseEntity<?> push(@PathVariable(value = "id") int id, @RequestPart("file") MultipartFile file ){
-		System.out.println("push to user");
-		System.out.println(file.getOriginalFilename());
-		System.out.println(file.getSize());
-		
-		pis.changeStatus(id, EnumStatus.RUNNING);
-		messageSender.convertAndSend("/topic/"+id+"/","STREAM\n\nid="+id);
-		return new ResponseEntity<>(HttpStatus.OK);
-	}
 	
 	@PostMapping(value = "/config/{id}") //TEST
 	public ResponseEntity<?> config(@PathVariable(value = "id") int id, @Valid  @RequestBody PiSettingsDTO piSettings){

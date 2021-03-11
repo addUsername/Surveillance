@@ -18,6 +18,9 @@ public class SecurityInterceptor implements HandlerInterceptor {
 	@Autowired
 	private UserService us;
 	
+	/*
+	 * TODO: throw NullException and/or invalida user/pass exception
+	 * */
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {

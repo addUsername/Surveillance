@@ -10,6 +10,6 @@ import com.example.demo.domain.Pi;
 @Repository
 public interface PiRepository extends JpaRepository<Pi, Long> {
 
-	@Query(value="SELECT id, status FROM PI", nativeQuery = true)
+	@Query(value="SELECT id, status, alias FROM PI", nativeQuery = true)
 	List<String[]> findAllIds();
 }

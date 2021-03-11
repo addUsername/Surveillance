@@ -24,16 +24,13 @@ public class UserService {
 		List<HomePiDTO> list = new ArrayList<HomePiDTO>();		
 		
 		for(String[] s: piRepo.findAllIds()) {
-			list.add(new HomePiDTO(Long.parseLong(s[0]),s[1]));
+			list.add(new HomePiDTO(Long.parseLong(s[0]),s[1], s[2]));
 		}
 		HomeDTO toReturn = new HomeDTO();
 		toReturn.setPi_ids(list);
 		return toReturn;
 	}
 	
-	public String getUsername() {
-		
-		return repo.findAll().get(0).getUsername();
-	}
+	public String getUsername() { return repo.findAll().get(0).getUsername(); }
 
 }

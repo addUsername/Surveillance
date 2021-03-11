@@ -31,26 +31,26 @@ import com.example.demo.services.AuthService;
 public class AUTHController {
 	
 	@Autowired
-	private AuthService auth;	
+	private AuthService auth;
 	
 	@RequestMapping(value = "/login", method = RequestMethod.POST, consumes = {"multipart/form-data"})
 	public ResponseEntity<String> login(
 			@Valid @RequestPart("pin") PinDTO pin,
 			@RequestPart("data") MultipartFile file) throws IOException {
-	
+		
 		if(auth.validateAndDecryptData(file)) {
 			auth.loadDb();
-			
-			if(auth.checkPin(pin.getPin())) {
+
+			if(auth.checkPin(pin)) {
 				String jwt = auth.generateToken(pin.getPin());
 				return new ResponseEntity<String>(jwt, HttpStatus.OK);
-				
+
 			} else throw new BadLoginException();
 		} else throw new BadDumpException();
 	}
 	
 	@RequestMapping(value = "/register", method = RequestMethod.POST)
-	public ResponseEntity<?> register (@Valid @RequestBody RegisterDTO newUser, HttpServletResponse response) throws IOException{
+	public ResponseEntity<?> register (@Valid @RequestBody RegisterDTO newUser, HttpServletResponse response) {
 		
 		if(auth.registerUser(newUser)) {
 			File dumpDb = auth.getDump();
@@ -62,7 +62,8 @@ public class AUTHController {
 			return new ResponseEntity<FileSystemResource>(
 					new FileSystemResource( dumpDb), respHeaders, HttpStatus.OK
 			); 
-		}		
+		}
+		//throw new UserAlreadyExistsException(newUser.getUsername() +"/"+ newUser.getEmail() );  
 		throw new UserAlreadyExistsException(); 
 	}
 	

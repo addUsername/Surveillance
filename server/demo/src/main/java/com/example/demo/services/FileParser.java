@@ -1,10 +1,16 @@
 package com.example.demo.services;
 
+import java.io.BufferedOutputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.concurrent.SynchronousQueue;
 
+import org.apache.tomcat.jni.File;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.example.demo.domain.enums.EnumVideoExt;
@@ -15,6 +21,11 @@ import com.example.demo.domain.enums.EnumVideoExt;
 @Component
 public class FileParser {
 
+	@Autowired
+	private PushNotificationService pns;
+	@Value("${path.imgPush}")
+	private String IMGPUSHPATH;
+	
 	private HashMap<Integer,SynchronousQueue<byte[]>> videos;
 	
 	
@@ -94,5 +105,24 @@ public class FileParser {
 				System.out.println("interrupted");
 			}			
 		}
+	}
+
+	public void savePushImage(String rd, InputStream inputStream) {
+		
+	    try (OutputStream output = new FileOutputStream(new java.io.File(IMGPUSHPATH+rd+".jpg"))) {
+	        inputStream.transferTo(output);
+	        System.out.println("push image saved!");
+	    } catch (IOException ioException) {
+	        ioException.printStackTrace();
+	    }
+		
+	}
+
+	public java.io.File getPushImg(String name) {
+		
+		if(pns.isImgAccesible(name)) {
+			return new java.io.File(IMGPUSHPATH+name+".jpg");
+		}
+		return null;
 	}
 }

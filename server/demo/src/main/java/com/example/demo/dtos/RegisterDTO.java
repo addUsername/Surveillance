@@ -18,10 +18,10 @@ public class RegisterDTO {
 	@Size(min=2, max=30, message = "wrong username size")
 	private String username;
 	@NotNull
-	@Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^\\da-zA-Z]).{6,15}$", message = "pass must contain: lowercase, uppercase, number adn special char")
+	@Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^\\da-zA-Z]).{6,15}$", message = "pass must contain: lowercase, uppercase, number and special char")
 	private String pass;
 	@NotNull
-	@Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^\\da-zA-Z]).{6,15}$", message = "pass must contain: lowercase, uppercase, number adn special char")
+	@Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^\\da-zA-Z]).{6,15}$", message = "pass must contain: lowercase, uppercase, number and special char")
 	private String pass2;
 	@NotNull
 	@Min(value = 10000, message = "cannot be less than 10000")
