@@ -10,4 +10,6 @@ public interface ViewOpsHome {
     void printHome(HomeDTO home);
     void showMessage(String mssg);
     void setImg(InputStream img, Integer id);
+    void showImg(InputStream is);
+    void showStream(String html);
 }

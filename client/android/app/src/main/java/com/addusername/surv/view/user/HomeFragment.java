@@ -42,6 +42,7 @@ public class HomeFragment extends Fragment implements MenuListener, SetImages {
     public HomeFragment(HomeDTO home) {
         homedto = home;
     }
+    public HomeFragment(){};
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

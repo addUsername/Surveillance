@@ -29,16 +29,23 @@ public class UserPresenter implements PresenterOpsViewUser, PresenterOpsModelUse
     public void doAddRpi(PiDTO piDTO) {mou.doAddRpi(piDTO);}
     @Override
     public void loadImgs(List<Integer> raspberryIds) { mou.loadImgs(raspberryIds); }
+
     @Override
-    public void getScreenShot(int rpiId) { mou.getScreenShot(rpiId);}
-    @Override
-    public void getStream(int rpiId) { mou.getStream(rpiId);}
+    public void getFromRPi(int rpiId, String action) {
+        mou.getFromRPi(rpiId,action);
+    }
+
     @Override
     public void homeReturn(HomeDTO home) {
         voh.printHome(home);
     }
     @Override
     public void setImg(InputStream img, Integer id) { voh.setImg(img,id);}
+    @Override
+    public void showImg(InputStream is) { voh.showImg(is); }
+    @Override
+    public void loadWebview(String html) { voh.showStream(html); }
+
     @Override
     public void addRpiReturn(boolean added) {
         if(added){

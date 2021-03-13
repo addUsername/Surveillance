@@ -4,11 +4,25 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.Toast;
 
 import com.addusername.surv.R;
@@ -103,6 +117,81 @@ public class UserActivity extends AppCompatActivity implements ViewOpsHome, View
               }
           });
     }
+
+    @Override
+    public void showImg(InputStream is) {
+        //TODO put img inside imageView not as backgroundimg
+        Context c = this;
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                /*
+                DisplayMetrics displayMetrics = new DisplayMetrics();
+                ((UserActivity) c).getWindowManager()
+                        .getDefaultDisplay()
+                        .getMetrics(displayMetrics);
+                int height = (int) Math.round(displayMetrics.heightPixels * 0.8);
+                int width =  (int) Math.round(displayMetrics.widthPixels * 0.9);
+                */
+                Dialog imgDialog = new Dialog(c);
+                imgDialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+                LinearLayout ll =  new LinearLayout(c);
+                BitmapDrawable img = new BitmapDrawable(is){
+                    @Override
+                    public void draw(Canvas canvas) {
+                        canvas.save();
+                        Log.d("img","dim "+(this.getBitmap().getWidth() / 2) + " " + this.getBitmap().getHeight() / 2);
+                        super.draw(canvas);
+                        canvas.restore();
+                    }
+                };
+                int width = (int) Math.round(img.getBitmap().getWidth() * 2);
+                int height =  (int) Math.round(img.getBitmap().getHeight() * 2);
+                ll.setLayoutParams(new LinearLayout.LayoutParams(width,height));
+                ll.setBackground(img);
+                imgDialog.setContentView(ll, new LinearLayout.LayoutParams(new LinearLayout.LayoutParams(width,height)));
+                imgDialog.show();
+            }
+        });
+    }
+
+    @Override
+    public void showStream(String html) {
+        UserActivity c = this;
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                Log.d("user","loadingwebview()");
+                DisplayMetrics displayMetrics = new DisplayMetrics();
+                ((UserActivity) c).getWindowManager()
+                        .getDefaultDisplay()
+                        .getMetrics(displayMetrics);
+                int height = (int) Math.round(displayMetrics.heightPixels * 0.8);
+                int width =  (int) Math.round(displayMetrics.widthPixels * 0.9);
+
+                Dialog imgDialog = new Dialog(c);
+                WebView webView = new WebView(c);
+
+                DialogInterface.OnDismissListener p = new DialogInterface.OnDismissListener(){
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        c.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                        webView.destroy();
+                    }
+                };
+                imgDialog.setOnDismissListener(p);
+                webView.loadDataWithBaseURL(null, html, "text/html", "UTF-8", null);
+                WebSettings webSettings = webView.getSettings();
+                webSettings.setJavaScriptEnabled(true);
+                //imgDialog.setContentView(webView, new LinearLayout.LayoutParams(new LinearLayout.LayoutParams(width,height)));
+                imgDialog.setContentView(webView, new LinearLayout.LayoutParams(new LinearLayout.LayoutParams(height,width)));
+                imgDialog.show();
+            }
+        });
+
+    }
+
     @Override
     public void addRpi(String alias, String location) { povu.doAddRpi(new PiDTO(alias, location)); }
     @Override
@@ -110,13 +199,15 @@ public class UserActivity extends AppCompatActivity implements ViewOpsHome, View
 
     @Override
     public void handleHomeClickEvent(int rpiId, int actionId) {
+        String action = null;
         switch (actionId){
             case R.id.popup_img:
-                povu.getScreenShot(rpiId);
+                action = "screenshot";
                 break;
             case R.id.popup_video:
-                povu.getStream(rpiId);
+                action = "stream";
                 break;
         }
+        if(action !=  null) povu.getFromRPi(rpiId,action);
     }
 }

@@ -57,26 +57,33 @@ public class UserModel implements ModelOpsUser {
     }
 
     @Override
-    public void getScreenShot(int rpiId) {
+    public void getFromRPi(int rpiId, String action) {
         this.bgExecutor.execute(new Runnable() {
             @Override
             public void run() {
-
+                switch (action){
+                    case "stream":
+                        String html = us.takeStream(rpiId);
+                        if(html != null){
+                            try {
+                                Thread.sleep(1000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            pomu.loadWebview(html);
+                        }
+                        break;
+                    case "screenshot":
+                        InputStream is = us.takeScreenShoot(rpiId);
+                        if(is == null){
+                            // show error menssage
+                            return;
+                        }
+                        pomu.showImg(is);
+                        break;
+                }
             }
         });
-
     }
-
-    @Override
-    public void getStream(int rpiId) {
-        this.bgExecutor.execute(new Runnable() {
-            @Override
-            public void run() {
-
-            }
-        });
-
-    }
-
     private void doDump(){ us.doDump(); }
 }
