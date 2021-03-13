@@ -10,24 +10,25 @@ import time
 import stomper
 import websocket
 import threading
+import os
 
 
-settings_path = "config.properties"
+settings_path = "/boot/resources/config.properties"
 
 def pingAndDownloadSettings(url):
     print("downloading")
     print(url)
     flag = True
-    time = 1
+    a = 1
     while(flag):
         x = requests.get(url)
         print(x)
         if(x.status_code < 300):            
             flag = False
         else:
-            time.sleep(time)
-            time = time * 2
-            if(time > 1500):
+            time.sleep(a)
+            a = a * 2
+            if(a > 1500):
                 exit(1)    
     MyUtils.persistSettings(settings_path, x.text)
     
@@ -58,6 +59,14 @@ def on_message(ws, message):
         photoCamera.close()
         vs.startRecordingMini(Out(ws,sendPath))
         ws.send(stomper.send("/app/string/"+settings["id"], "STATUS\n\nUP"))
+        lock.release()
+        return
+    if("SCREENSHOT" in message):
+        lock.acquire()
+        photoCamera.close()
+        x = sendScreen(sendScreenshot, "/boot/resources/screen.jpg")
+        
+        photoCamera.close()
         lock.release()
         return
         
@@ -92,12 +101,30 @@ def on_open(ws):
     ws.send(stomper.subscribe(settings["subscribePath"]+settings["id"]+"/",settings["id"],ack="auto"))
     ws.send(stomper.send("/app/string/"+settings["id"], "STATUS\n\nUP"))
 
-        
+def sendScreen(url, imgpath):
+    print("upload screen")
+    takeScreen(imgpath)
+    file = open( imgpath,'rb');
+    x = requests.post(url, files={"file":file})
+    print(x)
+    file.close()
+def takeScreen(imgpath):
+    print("starting camera")
+    photoCamera = PiCamera()
+    photoCamera.resolution = (1024,768)
+    photoCamera.rotation = settings["rotation"]
+    time.sleep(1)
+    photoCamera.capture(imgpath)
+    print("takin screen")
+    return
+    
 def pushUser(url, imgpath):
     print("push header")
-    headers = {'Content-type': 'image/jpeg'}
-    data = {"file" : open(imgpath,'rb')}
-    requests.post(url, headers=headers, data=data)
+    #headers = {'Content-type': 'multipart/form-data; boundary='+str(os.path.getsize(imgpath))}
+    file = open(imgpath,'rb');
+    x = requests.post(url, files={"file":file})
+    print(x)
+    file.close()
     
 
 if __name__== "__main__":
@@ -116,6 +143,7 @@ if __name__== "__main__":
     connectionUrl = "ws://"+settings["host"]+"/stream"
     sendPath = settings["sendPath"]+settings["id"]
     pushUserPath = "http://"+settings["host"]+settings["pushPath"]+settings["id"]
+    sendScreenshot = "http://"+settings["host"]+"/pi/screenshot/"+settings["id"]
     print(connectionUrl)
     print(sendPath)
     print(pushUserPath)
@@ -136,14 +164,15 @@ if __name__== "__main__":
     d = Det(settings)
     time.sleep(4)
     photoCamera = startCamera()
-    img = "test.jpg"    
+    img = "/boot/resources/test.jpg"
+    a = time.time()
+    b = 1
     while(True):
         print("capture()")
+        lock.acquire()
         try:
             photoCamera.capture(img)
         except:
-            lock.acquire()
-            lock.release()
             photoCamera = startCamera()
             photoCamera.capture(img)
         if(d.detect(img)):
@@ -152,7 +181,19 @@ if __name__== "__main__":
             # send request to inform android client
             photoCamera.close()
             pushUser(pushUserPath,img)
+            lock.release()
+            '''
+            time.sleep(10)
             print("lock")
             lock.acquire()
             lock.release()
             photoCamera= startCamera()
+            '''
+        lock.release()    
+        b = b+1
+        print(str(b))
+        c=time.time()
+        print(str(c - a ))
+        a = c
+        
+        
