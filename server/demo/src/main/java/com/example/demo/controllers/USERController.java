@@ -2,10 +2,6 @@ package com.example.demo.controllers;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
@@ -23,11 +19,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
-import com.example.demo.domain.enums.EnumStatus;
 import com.example.demo.domain.enums.EnumVideoExt;
 import com.example.demo.dtos.HomeDTO;
 import com.example.demo.dtos.PiDTO;
@@ -35,11 +28,10 @@ import com.example.demo.dtos.PiSettingsDTO;
 import com.example.demo.services.AuthService;
 import com.example.demo.services.FileParser;
 import com.example.demo.services.PiService;
-import com.example.demo.services.PushNotificationService;
 import com.example.demo.services.UserService;
 
 /**
- * TODO ALL OF THIS NEED TO BE AUTHENTICATED VIA JWT
+ * TODO Settings and Account things
  * @author SERGI
  *
  */
@@ -54,49 +46,83 @@ public class USERController {
 	@Autowired
 	private UserService us;
 	@Autowired
-	private PiService pis;	
+	private PiService pis;
 	@Autowired
 	private SimpMessagingTemplate messageSender;
-	@Autowired
-	private PushNotificationService pns;
-	
-
-	@RequestMapping(value = "/push/{id}", method = RequestMethod.POST)
-	public ResponseEntity<?> push(@PathVariable(value = "id") int id, @RequestPart("file") MultipartFile file, HttpServletRequest response ) throws UnknownHostException{
-		//TODO 
-		System.out.println("push to user");
-		System.out.println(file.getOriginalFilename());
-		System.out.println(file.getSize());
-		messageSender.convertAndSend("/topic/"+id+"/","STREAM\n\nid="+id);
 		
-		pns.push(id,file,"http://"+InetAddress.getLocalHost().getHostAddress()+":8080");
-		pis.changeStatus(id, EnumStatus.RUNNING);
-		return new ResponseEntity<>(HttpStatus.OK);
-	}
 	
 	@CrossOrigin
-	@GetMapping( value = "/stream/{id}") //update
+	@GetMapping( value = "/stream/{id}") //????????????????????????
     public void stream(@PathVariable(value = "id") int id,
     		HttpServletResponse response) throws IOException {
 		
+		System.out.println("STREREEEAAAAMMM");
+		
 		String type = pis.getVideoExt(id);
-		System.out.println(type.toString());
 		if(type.equals(EnumVideoExt.MJPEG.toString())) {			
 			response.setContentType("multipart/x-mixed-replace; boundary=--BoundaryString");
 		}
-		System.out.println("write stream");
 	    fp.writeStream(response.getOutputStream(), id, type);	   
 	    return;
     }
+	@GetMapping(value = "/config/{id}")
+	public ResponseEntity<?> getConfig(@PathVariable(value = "id") int id){
+		
+		PiSettingsDTO dto = pis.getRpiSettings(id);
+		if(dto != null) {
+			return new ResponseEntity<PiSettingsDTO>(dto, HttpStatus.OK);
+		};
+		return new ResponseEntity<String>("bad :(", HttpStatus.BAD_REQUEST);		
+	}
 	
-	@PostMapping(value = "/config/{id}") //TEST
-	public ResponseEntity<?> config(@PathVariable(value = "id") int id, @Valid  @RequestBody PiSettingsDTO piSettings){
+	@PostMapping(value = "/config/add") //TEST
+	public ResponseEntity<?> config(@Valid  @RequestBody PiSettingsDTO piSettings){
 		if(pis.updatePiSettings(piSettings)) {
 			return new ResponseEntity<String>("noice", HttpStatus.OK);
 		};
 		return new ResponseEntity<String>("bad :(", HttpStatus.BAD_REQUEST);		
 	}
 	
+	@RequestMapping(value = "/upload/{extension}/{id}", method = RequestMethod.GET)
+	public ResponseEntity<?> getMediaFromRPi(@PathVariable(value = "id") int id,@PathVariable(value = "extension") String extension) {
+		
+		System.out.println("upload");		
+		String command;
+		if(extension.equalsIgnoreCase("jpg")) {
+			fp.iniUploadFile(id);
+			command = "SCREENSHOT";
+		}else if(extension.equalsIgnoreCase("h264")){
+			command = "STREAM";
+			fp.iniUpload(id);
+		}else {
+			return new ResponseEntity<String>("wrong ext.",HttpStatus.BAD_REQUEST);
+		}
+		messageSender.convertAndSend("/topic/"+id+"/",command+"\n\nid="+id);		
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
+	@RequestMapping(value = "/download/{id}", method = RequestMethod.GET) //ok
+	public ResponseEntity<?> download(@PathVariable(value = "id") int id) {
+		
+		System.out.println("upload");
+		byte[] file =fp.downloadFile(id);
+		
+		if(file == null) return new ResponseEntity<>(HttpStatus.TOO_EARLY);
+		HttpHeaders respHeaders = new HttpHeaders();
+		respHeaders.setContentType(new MediaType("image","jpeg"));
+		    
+		return new ResponseEntity<byte[]>(file, respHeaders, HttpStatus.OK);		
+	}
+	/**
+	 * To see if jwt token is still valid and auto-login
+	 * TODO
+	 * To see if jwt token is still valid and auto-login? YEAH!
+	 * 
+	 * @return
+	 */
+	@GetMapping(value = "/login") //TODO not used yet, should allow login if jwt is present?
+	public ResponseEntity<?> loginReusing(){
+		return new ResponseEntity<String>(HttpStatus.OK);
+	}
 	@GetMapping(value = "/home") //OK
 	public ResponseEntity<?> home(){
 		HomeDTO home = us.getHome();

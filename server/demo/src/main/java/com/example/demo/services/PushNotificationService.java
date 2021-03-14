@@ -30,11 +30,17 @@ public class PushNotificationService {
 	
 	@Value("${secret.pushToken}")
 	private String pushToken;
-	
-	private final String URL = "https://fcm.googleapis.com/fcm/send";
+	@Value("${path.firebase}")
+	private String URL;
 	private Set<String> activePushImageEndpoints = new HashSet();
 	
-	
+	/**
+	 * 
+	 * 
+	 * @param id RPi id that sends the notification
+	 * @param file Image of the notification
+	 * @param urlPath Hostname uri to generate 1 use link
+	 */
 	@Async("asyncExecutor")
 	public void push(int id, MultipartFile file, String urlPath) {
 		
@@ -64,13 +70,20 @@ public class PushNotificationService {
         System.out.println("response push noti: "+response.getBody());
 		
 	}
+	/**
+	 * This methods sets the validity of /temp/push/{name}
+	 * @param name
+	 * @return
+	 */
 	public Boolean isImgAccesible(String name) {
 		boolean bol = activePushImageEndpoints.contains(name);
-		if(bol) {
-			//activePushImageEndpoints.remove(name.substring(0, name.length() - 4));
-		}
+		//if(bol) activePushImageEndpoints.remove(name);
 		return bol;
 	}
+	/**
+	 * Generate random img name to use as temp img on FCM
+	 * @return
+	 */
 	private String randStr() {
 		String aToZ = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
 		Random rand=new Random();
@@ -81,7 +94,10 @@ public class PushNotificationService {
 	    }
 	    return res.toString();
 	}
-	
+	/**
+	 * Represents the body of the request to FCM
+	 * @author SERGI	 *
+	 */
 	private class Body{
 		
 		String to, notification, body, title, image;

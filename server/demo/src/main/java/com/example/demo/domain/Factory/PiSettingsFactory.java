@@ -88,8 +88,13 @@ public class PiSettingsFactory {
 		toReturn.setModel(model);
 		toReturn.setWeights(weights);
 		toReturn.setThreshold(threshold);
+		
 		List<String> classes = new ArrayList<String>();
-		classes.add(defaultClasses);
+		if (defaultClasses.contains(","))
+			for(String s:defaultClasses.split(",")) 
+				classes.add(s);
+		else
+			classes.add(defaultClasses);		
 		toReturn.setClasses(classes);
 		
 		return toReturn;

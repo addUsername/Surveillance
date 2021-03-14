@@ -62,8 +62,7 @@ public class AUTHController {
 			return new ResponseEntity<FileSystemResource>(
 					new FileSystemResource( dumpDb), respHeaders, HttpStatus.OK
 			); 
-		}
-		//throw new UserAlreadyExistsException(newUser.getUsername() +"/"+ newUser.getEmail() );  
+		}  
 		throw new UserAlreadyExistsException(); 
 	}
 	

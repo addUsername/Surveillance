@@ -24,12 +24,14 @@ public class SecurityInterceptor implements HandlerInterceptor {
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
-		String token = request.getHeader("Authorization").replace("bearer ", "");
+		String token = request.getHeader("Authorization");
+		if(token == null) {
+			 token = request.getHeader("authorization");
+		}
+		token = token.replace("bearer ", "");
 		String username = us.getUsername();
 		
 		if(token == null || username == null) return false;		
-		if(jwt.isValid(token, username)) return true;
-		
-		return false;
+		return (jwt.isValid(token, username));
 	}
 }

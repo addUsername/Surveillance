@@ -2,27 +2,12 @@ package com.example.demo.dtos;
 
 import java.util.List;
 
-import javax.persistence.ElementCollection;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-
-import com.example.demo.domain.enums.EnumBoolean;
-import com.example.demo.domain.enums.EnumVideoExt;
-import com.example.demo.domain.enums.EnumVideoResolution;
-
 import lombok.Data;
 
 @Data
 public class PiSettingsDTO {
 	private Long id; // RPI ID NOT SETTIGS ID
-	// uris
-	private String host=null;
-	private String iniPath=null;
-	private String connectPath=null;
-	private String sendPath=null;
-	private String subscribePath=null;
-	private String videosPath=null;
-	private String pushPath=null;
+	// video
 	private String saveVideo = null;
 	private String videoExt = null;
 	private String videoRes = null;

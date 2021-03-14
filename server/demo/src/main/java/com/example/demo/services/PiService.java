@@ -11,6 +11,7 @@ import com.example.demo.domain.Pi;
 import com.example.demo.domain.PiSettings;
 import com.example.demo.domain.User;
 import com.example.demo.domain.Factory.PiSettingsFactory;
+import com.example.demo.domain.enums.EnumBoolean;
 import com.example.demo.domain.enums.EnumStatus;
 import com.example.demo.domain.enums.EnumVideoExt;
 import com.example.demo.domain.enums.EnumVideoResolution;
@@ -56,11 +57,15 @@ public class PiService {
 		if(pi == null) return false;
 		
 		PiSettings piS = pi.getPiSettings();
+		if(piSettings.getSaveVideo() != null) piS.setSaveVideo(EnumBoolean.valueOf(piSettings.getSaveVideo()));
 		
 		if(piSettings.getBitrate() != null) piS.setBitrate(Integer.parseInt(piSettings.getBitrate()));
 		if(piSettings.getVideoRes() != null) piS.setVideoRes(EnumVideoResolution.valueOf(piSettings.getVideoRes()));
 		if(piSettings.getVideoExt() != null) piS.setVideoExt(EnumVideoExt.valueOf(piSettings.getVideoExt()));
-		
+		if(piSettings.getFramerate() != null) piS.setFramerate(Integer.parseInt(piSettings.getFramerate()));
+		if(piSettings.getRotation() != null) piS.setRotation(Integer.parseInt(piSettings.getRotation()));
+		if(piSettings.getTimeRecording() != null) piS.setTimeRecording(Integer.parseInt(piSettings.getTimeRecording()));
+		if(piSettings.getClasses() != null) piS.setClasses(piSettings.getClasses());
 		if(piSettings.getModel() != null) piS.setModel(piSettings.getModel());
 		if(piSettings.getWeights() != null) piS.setWeights(piSettings.getWeights());
 		if(piSettings.getThreshold() != null) piS.setThreshold(piSettings.getThreshold());
@@ -68,6 +73,26 @@ public class PiService {
 		pi.setPiSettings(piS);
 		repo.save(pi);		
 		return true;
+	}
+
+	public PiSettingsDTO getRpiSettings(int id) {
+		
+		PiSettings pi = repo.findById((long) id).get().getPiSettings();
+		if(pi == null) return null;
+		PiSettingsDTO toReturn = new PiSettingsDTO();
+		
+		toReturn.setBitrate(""+pi.getBitrate());
+		toReturn.setSaveVideo(""+pi.getSaveVideo());
+		toReturn.setVideoExt(""+pi.getVideoExt());
+		toReturn.setVideoRes(""+pi.getVideoRes());
+		toReturn.setFramerate(""+pi.getFramerate());
+		toReturn.setRotation(""+pi.getRotation());
+		toReturn.setTimeRecording(""+pi.getTimeRecording());
+		toReturn.setModel(""+pi.getModel());
+		toReturn.setWeights(""+pi.getWeights());
+		toReturn.setClasses(pi.getClasses());
+		toReturn.setThreshold(""+pi.getThreshold());		
+		return toReturn;
 	}
 
 	public String getVideoExt(int id) {
@@ -84,5 +109,6 @@ public class PiService {
 		repo.save(pi);
 		return true;
 	}
+
 
 }

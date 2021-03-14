@@ -1,17 +1,16 @@
 package com.example.demo.services;
 
-import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
-import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ArrayBlockingQueue;
 
-import org.apache.tomcat.jni.File;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.domain.enums.EnumVideoExt;
 /**
@@ -26,19 +25,24 @@ public class FileParser {
 	@Value("${path.imgPush}")
 	private String IMGPUSHPATH;
 	
-	private HashMap<Integer,SynchronousQueue<byte[]>> videos;
+	//private HashMap<Integer,LinkedBlockingQueue<byte[]>> videos;
+	private HashMap<Integer,ArrayBlockingQueue<byte[]>> videos;
+	private HashMap<Integer, byte[]> files;
 	
 	
 	public FileParser() {
 		System.err.println("file parse instance created");
-		this.videos= new HashMap<Integer, SynchronousQueue<byte[]>>();
+		this.videos= new HashMap<Integer, ArrayBlockingQueue<byte[]>>();
+		this.files = new HashMap<Integer, byte[]>();
 	}
 	
 	public void add(byte[] fragment, int videoId) {
+		
 		try {
 			videos.get(videoId).put(fragment);
+			System.out.println("ADD");
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+			System.out.println("add interrupted");
 		}
 	}
 	/*
@@ -56,11 +60,11 @@ public class FileParser {
 		return new File(path).exists();
 	}
 	*/
-	public void iniUpload(int id) {		
-		videos.put(id, new SynchronousQueue<byte[]>());
-	}
+	public void iniUpload(int id) { videos.put(id, new ArrayBlockingQueue<byte[]>(1024)); }
+	public void iniUploadFile(int id) { files.put(id, null); }
 	
 	public void writeStream(OutputStream responseOs, int videoId, String type) {
+		
 		
 		if(type.equals(EnumVideoExt.H264.toString())) {
 			writeStreamH264(responseOs, videoId);
@@ -68,11 +72,12 @@ public class FileParser {
 		}
 		
 		byte[] bytes = null;
-		SynchronousQueue<byte[]> buffer = videos.get(videoId);
+		ArrayBlockingQueue<byte[]> buffer = videos.get(videoId);
 		while(true) {			
 			try {
 				bytes = buffer.take();
 				if (bytes == null) return;
+				//this should be outside the while loop, no?
 				responseOs.write((
 							"--BoundaryString\r\n" +
 							"Content-type: image/jpeg\r\n" +
@@ -92,17 +97,18 @@ public class FileParser {
 	private void writeStreamH264(OutputStream responseOs, int videoId) {
 		
 		byte[] bytes = null;
-		SynchronousQueue<byte[]> buffer = videos.get(videoId);
-		while(true) {			
+		ArrayBlockingQueue<byte[]> buffer = videos.get(videoId);
+		while(true) {
 			try {
-				bytes = buffer.take();
+				System.out.println("READ");
+				bytes = buffer.remove();
 				if (bytes == null) return;
 				responseOs.write(bytes);
 				responseOs.flush();
 				Thread.sleep(1000/10); //TODO fps
 			} catch (IOException | InterruptedException e) {
-				//e.printStackTrace();
-				System.out.println("interrupted");
+				e.printStackTrace();
+				System.out.println("read interrupted");
 			}			
 		}
 	}
@@ -111,18 +117,28 @@ public class FileParser {
 		
 	    try (OutputStream output = new FileOutputStream(new java.io.File(IMGPUSHPATH+rd+".jpg"))) {
 	        inputStream.transferTo(output);
-	        System.out.println("push image saved!");
 	    } catch (IOException ioException) {
 	        ioException.printStackTrace();
-	    }
-		
+	    }		
 	}
 
 	public java.io.File getPushImg(String name) {
 		
+		java.io.File toReturn = null;
 		if(pns.isImgAccesible(name)) {
-			return new java.io.File(IMGPUSHPATH+name+".jpg");
+			 toReturn = new java.io.File(IMGPUSHPATH + name + ".jpg");
+			 toReturn.deleteOnExit();
 		}
-		return null;
+		return toReturn;
 	}
+
+	public byte[] downloadFile(int id) {
+		try {
+			return files.get(id);
+		}catch (Exception e) {
+			return null;
+		}
+		
+	}
+	public void saveScreenshot(int id, MultipartFile file) throws IOException { files.put(id, file.getBytes()); }
 }

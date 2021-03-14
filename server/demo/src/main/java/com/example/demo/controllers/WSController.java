@@ -31,8 +31,6 @@ public class WSController {
 	@MessageMapping("/stream/{id}")
 	public void getFrames(@DestinationVariable String id, Message<String> string) throws UnsupportedEncodingException {
 		
-		System.out.println(id);
-		
 		byte[] decoded = Base64Utils.decodeFromString(string.getPayload());
 		fp.add(decoded, Integer.parseInt(id));
 	}
