@@ -12,6 +12,32 @@ import websocket
 import threading
 import os
 
+'''
+CURRENT:
+- Detection ok
+- Connection webSocket/http ok
+- Threading sync to share camara ok (always)
+- config.properties ok
+NEXT:
+- create independent layer between this app and raspibian {
+        Add a container: [ start on startup,
+                           launching this app and listen to its exit code,
+                           do power off and reboot,
+                           usbAutoUSBLoader to write specific files (log?, media, etc..) when usb memory is plugged in,
+                           log ],
+        Doc:             [  install guide (write some .sh to automate)
+        ]
+        Test:            [ Long time running test,
+                           Recovery from internal error: (this app crash but everything outside works),
+                           ""       ""   external error: server and wifi lost and so on
+        ]
+   }
+- Implement login by sending an encrypted 1 use password that changes every login (user has to put this Spring-generated file the first time)
+- Recive an Jwt and send that on CONNECT and on every rest call
+- LOG things like -> CPU/GPU ºC, time on, states changes, etc..
+- Do better status refresh on server..
+- Reorganize everything, 
+'''
 
 settings_path = "/boot/resources/config.properties"
 
@@ -51,6 +77,12 @@ def on_message(ws, message):
         return
     
     if("STATUS" in message):
+        # TODO
+        '''
+        statusDict = 
+        ws.send(stomper.send("/app/string/"+settings["id"], "STATUS\n\nUP"))
+        '''
+        
         pass
     
     if("MINI" in message):
@@ -190,10 +222,12 @@ if __name__== "__main__":
             photoCamera= startCamera()
             '''
         lock.release()    
+       
         b = b+1
+        '''
         print(str(b))
         c=time.time()
         print(str(c - a ))
         a = c
-        
+        '''
         
