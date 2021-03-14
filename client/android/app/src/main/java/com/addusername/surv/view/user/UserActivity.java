@@ -8,26 +8,24 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.Toast;
 
 import com.addusername.surv.R;
 import com.addusername.surv.dtos.HomeDTO;
+import com.addusername.surv.dtos.HomePiDTO;
 import com.addusername.surv.dtos.PiDTO;
+import com.addusername.surv.interfaces.ConfPiOps;
 import com.addusername.surv.interfaces.MenuListener;
 import com.addusername.surv.interfaces.PresenterOpsViewUser;
 import com.addusername.surv.interfaces.SetImages;
@@ -36,6 +34,7 @@ import com.addusername.surv.interfaces.ViewOpsHome;
 import com.addusername.surv.presenter.UserPresenter;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 public class UserActivity extends AppCompatActivity implements ViewOpsHome, ViewFragmentOpsUser, MenuListener {
@@ -43,6 +42,8 @@ public class UserActivity extends AppCompatActivity implements ViewOpsHome, View
 
     private PresenterOpsViewUser povu;
     private SetImages homeFragment;
+    private ConfPiOps confPiOps;
+    private List<String> piIds;
     private final FragmentManager fm = getSupportFragmentManager();
 
     @Override
@@ -75,7 +76,11 @@ public class UserActivity extends AppCompatActivity implements ViewOpsHome, View
                 //ft.replace(R.id.fragment, RegisterFragment.newInstance());
                 break;
             case R.id.menu_settings:
-                //ft.replace(R.id.fragment, RegisterFragment.newInstance());
+                Log.d("user","menu_settings");
+                ConfPiFragment c = new ConfPiFragment(this.piIds);
+                this.confPiOps = c;
+                ft.replace(R.id.fragmentUser, c);
+                ft.commit();
                 break;
             case R.id.menu_addpi:
                 Log.d("user","menu_addpi");
@@ -91,6 +96,10 @@ public class UserActivity extends AppCompatActivity implements ViewOpsHome, View
     @Override
     public void printHome(HomeDTO home) {
         //TODO identify and delete old fragment
+        this.piIds = new ArrayList<String>();
+        for(HomePiDTO s: home.getPi_ids()){
+            piIds.add(s.getId().toString());
+        }
         FragmentTransaction ft = fm.beginTransaction();
         HomeFragment hf =  new HomeFragment(home);
         homeFragment = hf;
