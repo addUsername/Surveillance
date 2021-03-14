@@ -4,6 +4,8 @@ import android.util.Log;
 
 import com.addusername.surv.dtos.HomeDTO;
 import com.addusername.surv.dtos.PiDTO;
+import com.addusername.surv.dtos.PiSettingsDTO;
+import com.google.android.gms.common.api.Response;
 
 import org.json.JSONObject;
 import org.springframework.http.HttpEntity;
@@ -91,9 +93,9 @@ public class UserService {
                 FileOutputStream fos = new FileOutputStream(PATH +"/"+ FILESQL);
                 fos.write(response.getBody());
                 fos.close();
-            }else{
-                Log.d("user","doDump() BAD response code: "+response.getStatusCode());
             }
+            Log.d("user","doDump() BAD response code: "+response.getStatusCode());
+
         }catch (Exception e){
                 Log.d("user","doDump() exception: "+e.getMessage());
         }
@@ -107,12 +109,12 @@ public class UserService {
         try {
             response = rt.exchange(HOST + "/user/img/"+i, HttpMethod.GET, request, byte[].class);
 
-            if (response.getStatusCode().is2xxSuccessful()){
-                Log.d("user","getImg() ok");
+            if (response.getStatusCode().is2xxSuccessful()) {
+                Log.d("user", "getImg() ok");
                 return new ByteArrayInputStream(response.getBody());
-            }else{
-                Log.d("user","getImg() BAD response code: "+response.getStatusCode());
             }
+            Log.d("user","getImg() BAD response code: "+response.getStatusCode());
+
         }catch (Exception e){
             Log.d("user","getImg() exception: "+e.getMessage());
             return null;
@@ -135,9 +137,9 @@ public class UserService {
 
                 Log.d("user","stream() ok");
                 return parseHtml(rpiId);
-            }else{
-                Log.d("user","stream() BAD response code: "+response.getStatusCode());
             }
+            Log.d("user","stream() BAD response code: "+response.getStatusCode());
+
         }catch (Exception e){
             Log.d("user","stream() exception: "+e.getMessage());
         }
@@ -163,12 +165,12 @@ public class UserService {
         try {
             response = rt.exchange(HOST + "/user/upload/jpg/"+rpiId, HttpMethod.GET, request, String.class);
 
-            if (response.getStatusCode().is2xxSuccessful()){
-                Log.d("user","screennshot() ok");
+            if (response.getStatusCode().is2xxSuccessful()) {
+                Log.d("user", "screennshot() ok");
                 return waitForResourceToBeReady(rpiId);
-            }else{
-                Log.d("user","screenshot() BAD response code: "+response.getStatusCode());
             }
+            Log.d("user","screenshot() BAD response code: "+response.getStatusCode());
+
         }catch (Exception e){
             Log.d("user","screenshot() exception: "+e.getMessage());
             return null;
@@ -190,13 +192,57 @@ public class UserService {
                 if (response.getStatusCode().is2xxSuccessful()){
                     Log.d("user","waitForResourceToBeReady() ok");
                     return new ByteArrayInputStream(response.getBody());
-                }else{
-                    Log.d("user","waitForResourceToBeReady() BAD response code: "+response.getStatusCode());
                 }
+                Log.d("user","waitForResourceToBeReady() BAD response code: "+response.getStatusCode());
+
             }catch (Exception e){
                 Log.d("user","waitForResourceToBeReady() exception: "+e.getMessage());
             }
         }
         return null;
+    }
+
+    public PiSettingsDTO getSettings(int id) {
+        HttpEntity<String> request = new HttpEntity<>("", headers);
+        try{
+            ResponseEntity<PiSettingsDTO> response = rt.exchange(HOST + "/user/config/"+id, HttpMethod.GET, request, PiSettingsDTO.class);
+            if (response.getStatusCode().is2xxSuccessful()){
+                Log.d("user","getSettings() ok");
+                return response.getBody();
+            }
+            Log.d("user","getSettings() BAD response code: "+response.getStatusCode());
+
+        }catch (Exception e){
+            Log.d("user","getSettings() exception: "+e.getMessage());
+        }
+        return null;
+    }
+
+    public void updateSettings(PiSettingsDTO updateSettings) {
+
+        JSONObject body = new JSONObject();
+        for (Field field : updateSettings.getClass().getDeclaredFields()) {
+            field.setAccessible(true);
+            try {
+                body.put(field.getName(), field.get(updateSettings));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        Log.d("user","updatesettings json: "+body.toString());
+        //HttpEntity<String> request = new HttpEntity<>(body.toString(), headers);
+        HttpEntity<PiSettingsDTO> request = new HttpEntity<>(updateSettings, headers);
+        try{
+                ResponseEntity<String> response = rt.exchange(HOST + "/user/config/update", HttpMethod.POST, request, String.class);
+            if (response.getStatusCode().is2xxSuccessful()){
+                Log.d("user","getSettings() ok");
+                return;
+            }
+            Log.d("user","getSettings() BAD response code: "+response.getStatusCode());
+
+        }catch (Exception e){
+            Log.d("user","getSettings() exception: "+e.getMessage());
+        }
+        return;
     }
 }

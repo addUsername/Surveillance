@@ -2,6 +2,7 @@ package com.addusername.surv.presenter;
 
 import com.addusername.surv.dtos.HomeDTO;
 import com.addusername.surv.dtos.PiDTO;
+import com.addusername.surv.dtos.PiSettingsDTO;
 import com.addusername.surv.interfaces.ModelOpsUser;
 import com.addusername.surv.interfaces.PresenterOpsModelUser;
 import com.addusername.surv.interfaces.PresenterOpsViewUser;
@@ -29,12 +30,10 @@ public class UserPresenter implements PresenterOpsViewUser, PresenterOpsModelUse
     public void doAddRpi(PiDTO piDTO) {mou.doAddRpi(piDTO);}
     @Override
     public void loadImgs(List<Integer> raspberryIds) { mou.loadImgs(raspberryIds); }
-
     @Override
     public void getFromRPi(int rpiId, String action) {
         mou.getFromRPi(rpiId,action);
     }
-
     @Override
     public void homeReturn(HomeDTO home) {
         voh.printHome(home);
@@ -45,6 +44,13 @@ public class UserPresenter implements PresenterOpsViewUser, PresenterOpsModelUse
     public void showImg(InputStream is) { voh.showImg(is); }
     @Override
     public void loadWebview(String html) { voh.showStream(html); }
+    @Override
+    public void loadPiSettings(PiSettingsDTO piSettings) {voh.setPiConfig(piSettings);}
+    @Override
+    public void getPiSettings(int id) {mou.getPiSettings(id);}
+
+    @Override
+    public void submitSettings(PiSettingsDTO updateSettings) { mou.submitPiSettings(updateSettings);}
 
     @Override
     public void addRpiReturn(boolean added) {

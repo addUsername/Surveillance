@@ -1,6 +1,7 @@
 package com.addusername.surv.model.user;
 
 import com.addusername.surv.dtos.PiDTO;
+import com.addusername.surv.dtos.PiSettingsDTO;
 import com.addusername.surv.interfaces.ModelOpsUser;
 import com.addusername.surv.interfaces.PresenterOpsModelUser;
 
@@ -85,5 +86,27 @@ public class UserModel implements ModelOpsUser {
             }
         });
     }
+
+    @Override
+    public void getPiSettings(int id) {
+        this.bgExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                PiSettingsDTO piSettings = us.getSettings(id);
+                pomu.loadPiSettings(piSettings);
+            }
+        });
+    }
+
+    @Override
+    public void submitPiSettings(PiSettingsDTO updateSettings) {
+        this.bgExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                us.updateSettings(updateSettings);
+            }
+        });
+    }
+
     private void doDump(){ us.doDump(); }
 }

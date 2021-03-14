@@ -25,6 +25,7 @@ import com.addusername.surv.R;
 import com.addusername.surv.dtos.HomeDTO;
 import com.addusername.surv.dtos.HomePiDTO;
 import com.addusername.surv.dtos.PiDTO;
+import com.addusername.surv.dtos.PiSettingsDTO;
 import com.addusername.surv.interfaces.ConfPiOps;
 import com.addusername.surv.interfaces.MenuListener;
 import com.addusername.surv.interfaces.PresenterOpsViewUser;
@@ -202,6 +203,15 @@ public class UserActivity extends AppCompatActivity implements ViewOpsHome, View
     }
 
     @Override
+    public void setPiConfig(PiSettingsDTO settings) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                confPiOps.fill(settings);
+            }
+        });
+    }
+    @Override
     public void addRpi(String alias, String location) { povu.doAddRpi(new PiDTO(alias, location)); }
     @Override
     public void loadImgs(List<Integer> raspberryIds) { povu.loadImgs(raspberryIds);}
@@ -219,4 +229,10 @@ public class UserActivity extends AppCompatActivity implements ViewOpsHome, View
         }
         if(action !=  null) povu.getFromRPi(rpiId,action);
     }
+
+    @Override
+    public void getPiSettings(int id) { povu.getPiSettings(id); }
+
+    @Override
+    public void submitSettings(PiSettingsDTO updateSettings) { povu.submitSettings(updateSettings);}
 }
