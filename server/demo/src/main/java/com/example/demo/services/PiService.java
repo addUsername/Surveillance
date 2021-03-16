@@ -57,7 +57,7 @@ public class PiService {
 		if(pi == null) return false;
 		
 		PiSettings piS = pi.getPiSettings();
-		if(piSettings.getSaveVideo() != null) piS.setSaveVideo(EnumBoolean.valueOf(piSettings.getSaveVideo()));
+		if(piSettings.getSaveVideo() != null) piS.setSaveVideo(piSettings.getSaveVideo().equalsIgnoreCase("true")? EnumBoolean.True : EnumBoolean.False);
 		
 		if(piSettings.getBitrate() != null) piS.setBitrate(Integer.parseInt(piSettings.getBitrate()));
 		if(piSettings.getVideoRes() != null) piS.setVideoRes(EnumVideoResolution.valueOf(piSettings.getVideoRes()));

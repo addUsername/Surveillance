@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
+import org.h2.util.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -20,6 +21,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.example.demo.dtos.FcmDTO;
+
 @Service
 public class PushNotificationService {
 
@@ -27,6 +30,8 @@ public class PushNotificationService {
 	AuthService auth;
 	@Autowired
 	FileParser fp;
+	@Autowired
+	PiService pis;
 	
 	@Value("${secret.pushToken}")
 	private String pushToken;
@@ -50,22 +55,39 @@ public class PushNotificationService {
 		HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.set("Authorization", "key="+pushToken);
-        Body body = new Body();
+       /* Body body = new Body();
         body.to = auth.getFcmtToken();
         body.body = "Rpi :"+id+"!";
         body.title = "Alert!";
+        
         String rd = randStr();
         activePushImageEndpoints.add(rd);
         body.image = urlPath + "/temp/push/"+ rd;
         HttpEntity<String> request = new HttpEntity<>(body.toJsonString(), headers);
+        */
+        String rd = randStr();
+        activePushImageEndpoints.add(rd);
+        
+        Data data = new Data();
+        data.rpiId = id;        
+        data.extension = pis.getVideoExt(id);
+        String image = urlPath + "/temp/push/"+ rd;
+        
         try {
 			fp.savePushImage(rd,file.getInputStream());
 			
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
-			body.image="";
+			image="";
 		}
+        FcmDTO body = new FcmDTO.Builder("Alert!","Rpi :"+id+"!")
+        		.withImage(image)
+        		.to(auth.getFcmtToken())
+        		.withData(data,false)
+        		.andPriority("normal")
+        		.build();
+        System.out.println("request body: "+body.toJson());
+        HttpEntity<String> request = new HttpEntity<>(body.toJson(), headers);
         ResponseEntity<String> response = rt.exchange(URL, HttpMethod.POST, request, String.class);
         System.out.println("response push noti: "+response.getBody());
 		
@@ -98,6 +120,7 @@ public class PushNotificationService {
 	 * Represents the body of the request to FCM
 	 * @author SERGI	 *
 	 */
+	/*
 	private class Body{
 		
 		String to, notification, body, title, image;
@@ -113,11 +136,13 @@ public class PushNotificationService {
 			+ "        \"image\": \""+image+"\"}\r\n}";
 			
 			return toReturn;
-			
 		}
-		
-		
-		
+	}
+	*/
+	private class Data{
+		String extension;
+		int rpiId;
+		Data(){}
 	}
 
 }

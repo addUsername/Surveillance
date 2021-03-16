@@ -67,7 +67,7 @@ public class USERController {
     }
 	@GetMapping(value = "/config/{id}")
 	public ResponseEntity<?> getConfig(@PathVariable(value = "id") int id){
-		
+		System.out.println("CONFIGG");
 		PiSettingsDTO dto = pis.getRpiSettings(id);
 		if(dto != null) {
 			return new ResponseEntity<PiSettingsDTO>(dto, HttpStatus.OK);
@@ -75,9 +75,11 @@ public class USERController {
 		return new ResponseEntity<String>("bad :(", HttpStatus.BAD_REQUEST);		
 	}
 	
-	@PostMapping(value = "/config/add") //TEST
-	public ResponseEntity<?> config(@Valid  @RequestBody PiSettingsDTO piSettings){
+	@PostMapping(value = "/config/update") //TEST
+	public ResponseEntity<?> config(@RequestBody PiSettingsDTO piSettings){
+		
 		if(pis.updatePiSettings(piSettings)) {
+			messageSender.convertAndSend("/topic/"+piSettings.getId()+"/","REBOOT\n\n");
 			return new ResponseEntity<String>("noice", HttpStatus.OK);
 		};
 		return new ResponseEntity<String>("bad :(", HttpStatus.BAD_REQUEST);		

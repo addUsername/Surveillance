@@ -21,5 +21,5 @@ public class PiSettingsDTO {
 	private String model=null;
 	private String weights=null;
 	private List<String> classes=null;
-	private String threshold=null;;
+	private String threshold=null;
 }
