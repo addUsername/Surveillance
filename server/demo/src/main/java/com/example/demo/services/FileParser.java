@@ -107,7 +107,7 @@ public class FileParser {
 				responseOs.flush();
 				Thread.sleep(1000/10); //TODO fps
 			} catch (IOException | InterruptedException e) {
-				e.printStackTrace();
+				//e.printStackTrace();
 				System.out.println("read interrupted");
 			}			
 		}

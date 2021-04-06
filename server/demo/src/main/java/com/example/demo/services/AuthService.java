@@ -83,6 +83,7 @@ public class AuthService {
 
 	public File getDump() {
 		
+		repo.prepareForDumpDB();
 		repo.dumpDB(dumpPath);
 		Crypt.encrypt(magicKey.getBytes(), new File(dumpPath), new File(dumpPath));
 		return (new File(dumpPath));

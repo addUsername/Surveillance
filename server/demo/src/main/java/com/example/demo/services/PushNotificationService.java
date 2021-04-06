@@ -2,11 +2,14 @@ package com.example.demo.services;
 
 
 import java.io.IOException;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+
+import javax.transaction.Transactional;
 
 import org.h2.util.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +24,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.example.demo.domain.enums.EnumVideoExt;
 import com.example.demo.dtos.FcmDTO;
-
+@Transactional
 @Service
 public class PushNotificationService {
 
@@ -80,12 +84,15 @@ public class PushNotificationService {
 			e.printStackTrace();
 			image="";
 		}
-        FcmDTO body = new FcmDTO.Builder("Alert!","Rpi :"+id+"!")
-        		.withImage(image)
+        FcmDTO body = new FcmDTO.Builder()
         		.to(auth.getFcmtToken())
-        		.withData(data,false)
-        		.andPriority("normal")
+        		.doAction("STREAM")
+        		.from(id)
+        		.andExtension(EnumVideoExt.H264.getExt())
+        		.withText("Is one of yours?","RPi: "+id+" found something like a human")
+        		.andImage(image)        		
         		.build();
+        
         System.out.println("request body: "+body.toJson());
         HttpEntity<String> request = new HttpEntity<>(body.toJson(), headers);
         ResponseEntity<String> response = rt.exchange(URL, HttpMethod.POST, request, String.class);

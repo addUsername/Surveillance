@@ -22,7 +22,7 @@ import com.example.demo.repositories.UserRepository;
 
 @Service
 public class PiService {
-
+	
 	@Autowired
 	private PiRepository repo;
 	@Autowired
@@ -74,7 +74,6 @@ public class PiService {
 		repo.save(pi);		
 		return true;
 	}
-
 	public PiSettingsDTO getRpiSettings(int id) {
 		
 		PiSettings pi = repo.findById((long) id).get().getPiSettings();
@@ -107,6 +106,13 @@ public class PiService {
 		if(pi == null) return false;
 		pi.setStatus(valueOf);
 		repo.save(pi);
+		return true;
+	}
+	public boolean isPiAvailable(int id) {
+		
+		if(repo.findById(Long.parseLong(""+id)).get().getStatus().equals(EnumStatus.OFF)) {
+			return false;
+		}
 		return true;
 	}
 
