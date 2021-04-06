@@ -1,12 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/menu_home"
+        android:onClick="menuClick"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_user_home"
+        android:title="Home" />
+    <item
+        android:id="@+id/menu_addpi"
+        android:onClick="menuClick"
+        android:title="Add pi" />
+        <!-- android:icon="@drawable/ic_menu_item1" -->
+        android:onClick="menuClick"/>
     <item
         android:id="@+id/menu_settings"
+        android:onClick="menuClick"
         android:title="Settings" />
         <!-- android:icon="@drawable/ic_menu_item1" -->
-        android:onClick="menuClick"
-        android:title="@string/gmaps"/>
+        android:onClick="menuClick"/>
     <item
         android:id="@+id/menu_account"
         android:onClick="menuClick"
