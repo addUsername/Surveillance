@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -49,11 +50,13 @@ public class PIController {
 	}
 	
 	@RequestMapping(value = "/push/{id}", method = RequestMethod.POST)
-	public ResponseEntity<?> push(@PathVariable(value = "id") int id, @RequestPart("file") MultipartFile file ) throws UnknownHostException{
+	public ResponseEntity<?> push(@PathVariable(value = "id") int id,
+									@RequestPart("file") MultipartFile file) throws IOException{
 		//TODO 
 		System.out.println("push to user");
 		System.out.println(file.getName());
 		System.out.println(file.getSize());
+		System.out.println(file.getInputStream().available());
 		
 		messageSender.convertAndSend("/topic/"+id+"/","STREAM\n\nid="+id);		
 		pns.push(id,file,"http://"+InetAddress.getLocalHost().getHostAddress()+":8080");
@@ -63,14 +66,14 @@ public class PIController {
 	}
 	
 	@RequestMapping(value = "/screenshot/{id}", method = RequestMethod.POST)
-	public ResponseEntity<?> postScreensot(@PathVariable(value = "id") int id, @RequestPart("file") MultipartFile file ) throws IOException{
+	public ResponseEntity<?> postScreensot(@PathVariable(value = "id") int id,
+											@RequestPart("file") MultipartFile file ) throws IOException{
 		//TODO 
 		System.out.println("pi screenshot");
 		System.out.println(file.getName());
 		System.out.println(file.getSize());
 			
 		fp.saveScreenshot(id,file);
-		
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 }

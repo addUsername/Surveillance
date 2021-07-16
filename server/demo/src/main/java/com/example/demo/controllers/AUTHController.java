@@ -2,6 +2,8 @@ package com.example.demo.controllers;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.management.ManagementFactory;
+import java.lang.management.MemoryMXBean;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -33,6 +35,7 @@ public class AUTHController {
 	@Autowired
 	private AuthService auth;
 	
+	
 	@RequestMapping(value = "/login", method = RequestMethod.POST, consumes = {"multipart/form-data"})
 	public ResponseEntity<String> login(
 			@Valid @RequestPart("pin") PinDTO pin,
@@ -47,6 +50,13 @@ public class AUTHController {
 
 			} else throw new BadLoginException();
 		} else throw new BadDumpException();
+	}
+	
+	@RequestMapping(value = "/memory", method = RequestMethod.GET)
+	public ResponseEntity<String> mem(){
+		MemoryMXBean memoryMXBean = ManagementFactory.getMemoryMXBean();
+		
+        return new ResponseEntity<String>(memoryMXBean.getHeapMemoryUsage().toString(), HttpStatus.OK);
 	}
 	
 	@RequestMapping(value = "/register", method = RequestMethod.POST)

@@ -25,8 +25,8 @@ public class DemoApplication {
 	@Bean
 	public ServletServerContainerFactoryBean createServletServerContainerFactoryBean() {
 	    ServletServerContainerFactoryBean container = new ServletServerContainerFactoryBean();
-	    container.setMaxTextMessageBufferSize(100000000); //100mb no disconect event called
-	    container.setMaxBinaryMessageBufferSize(100000000); //100mb no disconect event called
+	    container.setMaxTextMessageBufferSize(10000000); //10mb no disconect event called
+	    container.setMaxBinaryMessageBufferSize(10000000); //10mb no disconect event called
 	    System.err.println("Websocket factory returned");
 	    return container;
 	}

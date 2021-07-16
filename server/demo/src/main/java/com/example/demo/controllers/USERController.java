@@ -1,7 +1,6 @@
 package com.example.demo.controllers;
 
 import java.io.File;
-import java.io.IOException;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
@@ -12,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.domain.enums.EnumVideoExt;
 import com.example.demo.dtos.HomeDTO;
 import com.example.demo.dtos.PiDTO;
 import com.example.demo.dtos.PiSettingsDTO;
@@ -50,21 +47,6 @@ public class USERController {
 	@Autowired
 	private SimpMessagingTemplate messageSender;
 		
-	
-	@CrossOrigin
-	@GetMapping( value = "/stream/{id}") //????????????????????????
-    public void stream(@PathVariable(value = "id") int id,
-    		HttpServletResponse response) throws IOException {
-		
-		System.out.println("STREREEEAAAAMMM");
-		
-		String type = pis.getVideoExt(id);
-		if(type.equals(EnumVideoExt.MJPEG.toString())) {			
-			response.setContentType("multipart/x-mixed-replace; boundary=--BoundaryString");
-		}
-	    fp.writeStream(response.getOutputStream(), id, type);	   
-	    return;
-    }
 	@GetMapping(value = "/config/{id}")
 	public ResponseEntity<?> getConfig(@PathVariable(value = "id") int id){
 		System.out.println("CONFIGG");
@@ -88,7 +70,10 @@ public class USERController {
 	@RequestMapping(value = "/upload/{extension}/{id}", method = RequestMethod.GET)
 	public ResponseEntity<?> getMediaFromRPi(@PathVariable(value = "id") int id,@PathVariable(value = "extension") String extension) {
 		
-		System.out.println("upload");		
+		if(!pis.isPiAvailable(id)) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		System.out.println("upload");	
 		String command;
 		if(extension.equalsIgnoreCase("jpg")) {
 			fp.iniUploadFile(id);
@@ -99,13 +84,15 @@ public class USERController {
 		}else {
 			return new ResponseEntity<String>("wrong ext.",HttpStatus.BAD_REQUEST);
 		}
-		messageSender.convertAndSend("/topic/"+id+"/",command+"\n\nid="+id);		
+		messageSender.convertAndSend("/topic/"+id+"/",command+"\n\nid="+id);
+		
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	@RequestMapping(value = "/download/{id}", method = RequestMethod.GET) //ok
 	public ResponseEntity<?> download(@PathVariable(value = "id") int id) {
 		
 		System.out.println("upload");
+		
 		byte[] file =fp.downloadFile(id);
 		
 		if(file == null) return new ResponseEntity<>(HttpStatus.TOO_EARLY);

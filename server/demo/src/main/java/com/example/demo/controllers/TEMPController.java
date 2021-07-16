@@ -24,7 +24,7 @@ import com.example.demo.services.PiService;
 
 /**
  * This controller is used to get the image on the push notification and for
- * consume streaming in Android by WebView/fetch/jmuxer. So we can't (and shouldnt) use jwt
+ * consume streaming in Android by WebView/fetch/jmuxer. So we can't (and should not) use jwt
  * 
  * Implement some kind of auth?, the data only last 1 request, but new data arrives on fixed.
  * include, at leat, some kind of token as URL parameter (or path), to make unique links.
@@ -72,7 +72,7 @@ public class TEMPController {
 		
 		String type = pis.getVideoExt(id);
 		if(type.equals(EnumVideoExt.MJPEG.toString())) {
-			System.out.println("MJPEGG");
+			System.out.println("MJPEG");
 			response.setContentType("multipart/x-mixed-replace; boundary=--BoundaryString");
 		}else {
 			response.setContentType("application/octet-stream");
