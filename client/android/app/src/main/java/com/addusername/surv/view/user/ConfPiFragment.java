@@ -77,6 +77,8 @@ public class ConfPiFragment extends Fragment implements MenuListener, ConfPiOps 
                 updateSettings.setWeights(null);
                 updateSettings.setClasses(null);
                 updateSettings.setThreshold((texts.get(R.id.config_threshold).getText().toString()));
+
+                Log.d("settings",updateSettings.getVideoRes());
                 ((ViewFragmentOpsUser) getActivity()).submitSettings(updateSettings);
 
 
@@ -136,6 +138,7 @@ public class ConfPiFragment extends Fragment implements MenuListener, ConfPiOps 
     }
 
     private void fillEnums(String videoExt, String videoRes) {
+        Log.d("config",videoExt+videoRes);
         ArrayAdapter aa = new ArrayAdapter(this.getContext(),android.R.layout.simple_spinner_item,this.videoExt);
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         enums.get(R.id.config_extension).setAdapter(aa);
@@ -144,7 +147,7 @@ public class ConfPiFragment extends Fragment implements MenuListener, ConfPiOps 
         ArrayAdapter a = new ArrayAdapter(this.getContext(),android.R.layout.simple_spinner_item,this.videoRes);
         a.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         enums.get(R.id.config_res).setAdapter(a);
-        enums.get(R.id.config_extension).setSelection(a.getPosition(videoRes));
+        enums.get(R.id.config_res).setSelection(a.getPosition(videoRes));
     }
     @Override
     public void menuClick(MenuItem menuItem) { ml.menuClick(menuItem); }

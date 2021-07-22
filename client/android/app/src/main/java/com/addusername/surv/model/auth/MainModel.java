@@ -1,7 +1,6 @@
 package com.addusername.surv.model.auth;
 
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -9,7 +8,6 @@ import com.addusername.surv.dtos.LoginForm;
 import com.addusername.surv.dtos.RegisterForm;
 import com.addusername.surv.interfaces.ModelOps;
 import com.addusername.surv.interfaces.PresenterOpsModel;
-import com.addusername.surv.view.auth.MainActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -28,7 +26,8 @@ public class MainModel implements ModelOps {
     public MainModel(PresenterOpsModel pom, File file) {
 
         this.pom = pom;
-        this.auth = new AuthService(file.getAbsolutePath(),"http://192.168.1.51:8080");
+    //"http://192.168.1.51:8080"
+        this.auth = new AuthService(file.getAbsolutePath(),"http://192.168.1.51:8080"); // ""
         doFCM();
     }
 

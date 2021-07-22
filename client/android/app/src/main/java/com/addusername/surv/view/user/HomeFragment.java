@@ -19,7 +19,6 @@ import android.widget.GridLayout;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.addusername.surv.R;
 import com.addusername.surv.dtos.HomeDTO;
@@ -132,6 +131,8 @@ public class HomeFragment extends Fragment implements MenuListener, SetImages {
     private View.OnClickListener imgListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            //Todo check this
+            //WTF imgs.get(id).getId() == id ¿?
             for(Integer id: imgs.keySet()){
                 if(imgs.get(id).getId() == v.getId()){
                     //vfou.getStream(id);

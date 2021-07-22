@@ -1,7 +1,5 @@
 package com.addusername.surv.interfaces;
 
-import android.graphics.Bitmap;
-
 import com.addusername.surv.dtos.HomeDTO;
 import com.addusername.surv.dtos.PiSettingsDTO;
 

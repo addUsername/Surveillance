@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentTransaction;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
@@ -47,9 +48,36 @@ public class UserActivity extends AppCompatActivity implements ViewOpsHome, View
     private List<String> piIds;
     private final FragmentManager fm = getSupportFragmentManager();
 
+    /**
+     * read this https://stackoverflow.com/a/6357330/13771772
+     * @param intent
+     */
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d("FCM","onPostResume");
+
+        Intent intent = getIntent();
+
+        String rpiId = intent.getStringExtra("rpiId");
+        String extension = intent.getStringExtra("extension");
+        Log.d("FCM",rpiId + extension);
+        if(rpiId != null){
+            Log.d("FCM","id not null");
+            povu.getFromRPi(Integer.parseInt(rpiId),"stream");
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        overridePendingTransition(android.R.anim.fade_out, android.R.anim.fade_in);
         setContentView(R.layout.activity_user);
         String token = getIntent().getStringExtra("token");
         String host = getIntent().getStringExtra("host");
@@ -177,8 +205,10 @@ public class UserActivity extends AppCompatActivity implements ViewOpsHome, View
                 ((UserActivity) c).getWindowManager()
                         .getDefaultDisplay()
                         .getMetrics(displayMetrics);
-                int height = (int) Math.round(displayMetrics.heightPixels * 0.8);
-                int width =  (int) Math.round(displayMetrics.widthPixels * 0.9);
+                /*int height = (int) Math.round(displayMetrics.heightPixels * 0.8);
+                int width =  (int) Math.round(displayMetrics.widthPixels * 0.9);*/
+                int height = displayMetrics.heightPixels;
+                int width =  displayMetrics.widthPixels;
 
                 Dialog imgDialog = new Dialog(c);
                 WebView webView = new WebView(c);
@@ -195,7 +225,7 @@ public class UserActivity extends AppCompatActivity implements ViewOpsHome, View
                 WebSettings webSettings = webView.getSettings();
                 webSettings.setJavaScriptEnabled(true);
                 //imgDialog.setContentView(webView, new LinearLayout.LayoutParams(new LinearLayout.LayoutParams(width,height)));
-                imgDialog.setContentView(webView, new LinearLayout.LayoutParams(new LinearLayout.LayoutParams(height,width)));
+                imgDialog.setContentView(webView, new LinearLayout.LayoutParams(new LinearLayout.LayoutParams(width,height)));
                 imgDialog.show();
             }
         });

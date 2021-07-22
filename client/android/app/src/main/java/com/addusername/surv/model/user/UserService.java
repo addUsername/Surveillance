@@ -5,7 +5,6 @@ import android.util.Log;
 import com.addusername.surv.dtos.HomeDTO;
 import com.addusername.surv.dtos.PiDTO;
 import com.addusername.surv.dtos.PiSettingsDTO;
-import com.google.android.gms.common.api.Response;
 
 import org.json.JSONObject;
 import org.springframework.http.HttpEntity;
@@ -20,7 +19,6 @@ import java.io.ByteArrayInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Reader;
 import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
 import java.util.stream.Collectors;
@@ -100,28 +98,6 @@ public class UserService {
                 Log.d("user","doDump() exception: "+e.getMessage());
         }
     }
-
-    public InputStream getImg(Integer i) {
-
-        HttpEntity<String> request = new HttpEntity<>("", headers);
-        ResponseEntity<byte[]> response ;
-
-        try {
-            response = rt.exchange(HOST + "/user/img/"+i, HttpMethod.GET, request, byte[].class);
-
-            if (response.getStatusCode().is2xxSuccessful()) {
-                Log.d("user", "getImg() ok");
-                return new ByteArrayInputStream(response.getBody());
-            }
-            Log.d("user","getImg() BAD response code: "+response.getStatusCode());
-
-        }catch (Exception e){
-            Log.d("user","getImg() exception: "+e.getMessage());
-            return null;
-        }
-        return null;
-    }
-
     public InputStream getImgMock() {
         Log.d("user","getImgMock() getting img mock");
         return this.getClass().getClassLoader().getResourceAsStream(MOCKIMG);

@@ -1,5 +1,7 @@
 package com.addusername.surv.model.user;
 
+import android.util.Log;
+
 import com.addusername.surv.dtos.PiDTO;
 import com.addusername.surv.dtos.PiSettingsDTO;
 import com.addusername.surv.interfaces.ModelOpsUser;
@@ -20,6 +22,9 @@ public class UserModel implements ModelOpsUser {
 
     public UserModel(PresenterOpsModelUser pomu, String token, String host, File filesDir) {
         this.pomu = pomu;
+        Log.d("patha",filesDir.getAbsolutePath());
+        Log.d("patha",filesDir.getAbsolutePath());
+        Log.d("patha",filesDir.getAbsolutePath());
         us = new UserService(token,host, filesDir.getAbsolutePath());
     }
 
@@ -37,21 +42,21 @@ public class UserModel implements ModelOpsUser {
             @Override
             public void run() {
                 pomu.addRpiReturn(us.doAddRpi(piDTO));
-                doDump();
+                us.doDump();
             }
         });
     }
     @Override
     public void loadImgs(List<Integer> raspberryIds) {
-        for(Integer id: raspberryIds){
+        for(Integer rpiId: raspberryIds){
             this.multiExecutor.execute(new Runnable() {
                 @Override
                 public void run() {
-                    InputStream img = us.getImg(id);
+                    InputStream img = us.takeScreenShoot(rpiId);;
                     if(img == null) {
                         img = us.getImgMock();
                     }
-                    pomu.setImg(img, id);
+                    pomu.setImg(img, rpiId);
                 }
             });
         }
@@ -104,9 +109,8 @@ public class UserModel implements ModelOpsUser {
             @Override
             public void run() {
                 us.updateSettings(updateSettings);
+                us.doDump();
             }
         });
     }
-
-    private void doDump(){ us.doDump(); }
 }

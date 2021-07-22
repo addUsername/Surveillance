@@ -25,7 +25,8 @@ public class UtilsMyFirebase {
 
             if (response.getStatusCode().is2xxSuccessful()) {
                 Log.d("FCM", "getImg() ok");
-                Bitmap img = BitmapFactory.decodeStream(new ByteArrayInputStream(response.getBody()));
+                Bitmap img = BitmapFactory.decodeStream(
+                        new ByteArrayInputStream(response.getBody()));
                 if(img != null){
                     return img;
                 }

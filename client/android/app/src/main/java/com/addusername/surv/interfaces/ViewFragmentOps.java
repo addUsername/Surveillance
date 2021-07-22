@@ -2,8 +2,6 @@ package com.addusername.surv.interfaces;
 
 import android.widget.EditText;
 
-import com.addusername.surv.dtos.RegisterForm;
-
 import java.util.HashMap;
 
 public interface ViewFragmentOps {

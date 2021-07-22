@@ -23,6 +23,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.messaging.FirebaseMessaging;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity implements ViewOps, ViewFragmentOps {
@@ -30,6 +31,25 @@ public class MainActivity extends AppCompatActivity implements ViewOps, ViewFrag
     private PresenterOpsView pov;
     private final FragmentManager fm = getSupportFragmentManager();
 
+    private Process process;
+    /**
+     * to put log to a file
+     */
+
+    public Process launchLogcat(String filename) {
+        Process process = null;
+        String cmd = "logcat -f " + filename + "\n";
+        try {
+            Log.d("aa","aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+            process = Runtime.getRuntime().exec(cmd);
+        } catch (IOException e) {
+            process = null;
+        }
+        return process;
+    }
+    /**
+     * Delete??
+     */
     @Override
     protected void onRestart() {
         super.onRestart();
@@ -40,6 +60,8 @@ public class MainActivity extends AppCompatActivity implements ViewOps, ViewFrag
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        process = launchLogcat("sdcard/hiii/log.txt");
+
         pov = new MainPresenter(this, getApplicationContext().getFilesDir());
         if (pov.getToken() != null) {
             Log.d("noti","start user");
@@ -70,6 +92,7 @@ public class MainActivity extends AppCompatActivity implements ViewOps, ViewFrag
         myIntent.putExtra("host", pov.getHost());
         myIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(myIntent);
+        overridePendingTransition(android.R.anim.fade_out, android.R.anim.fade_in);
     }
 
     @Override

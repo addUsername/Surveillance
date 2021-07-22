@@ -21,7 +21,6 @@ import org.springframework.web.client.RestTemplate;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.List;
 
 public class AuthService {
@@ -45,7 +44,10 @@ public class AuthService {
 
         Resource content = null;
         try {
-            content = new MultipartByteArrayResource(FileUtils.readFileToByteArray(new File(FILESDIR +"/"+ FILESQL)), FILESQL);
+            content = new MultipartByteArrayResource(
+                    FileUtils.readFileToByteArray(
+                            new File(FILESDIR +"/"+ FILESQL)),
+                            FILESQL);
         } catch (IOException e) {
             e.printStackTrace();
         }
